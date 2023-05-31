@@ -368,6 +368,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 553007776}
+  - component: {fileID: 553007777}
   - component: {fileID: 553007775}
   m_Layer: 0
   m_Name: Map
@@ -407,6 +408,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &553007777
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 553007773}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a14b6891131083e48af7ae7f896b0f21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &904404547
 GameObject:
   m_ObjectHideFlags: 0
@@ -418,7 +431,6 @@ GameObject:
   - component: {fileID: 904404550}
   - component: {fileID: 904404549}
   - component: {fileID: 904404548}
-  - component: {fileID: 904404551}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -476,18 +488,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &904404551
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 904404547}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a14b6891131083e48af7ae7f896b0f21, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1606416715
 GameObject:
   m_ObjectHideFlags: 0
