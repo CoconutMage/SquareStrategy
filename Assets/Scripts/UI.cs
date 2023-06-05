@@ -11,7 +11,6 @@ public class UI : MonoBehaviour
 	public TMP_Text waterUnitsText;
 	public TMP_Text resourceText;
 
-
 	public static UI Instance { get; private set; }
 	void Awake()
 	{

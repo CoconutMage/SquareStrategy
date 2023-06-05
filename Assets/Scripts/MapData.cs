@@ -18,8 +18,6 @@ public class MapData : MonoBehaviour
 		Map = new Dictionary<int, Chunk>();
 	}
 
-
-
 	public void PopulateChunkData(int chunkIndex, Vector2 location)
 	{
 		Map[chunkIndex] = new Chunk
@@ -64,7 +62,7 @@ public class MapData : MonoBehaviour
 		public int chunkIndex;
 		public int index;
 		public Vector2 coordinates;
-		public string material;
+		public string tileType;
 
 		public bool city;
 		public Dictionary<string, int> resources;
@@ -81,7 +79,7 @@ public class MapData : MonoBehaviour
 			chunkIndex = aa;
 			index = ab;
 			coordinates = ac;
-			material = ad;
+			tileType = ad;
 
 			//Game Info
 			city = ae;
@@ -95,7 +93,12 @@ public class MapData : MonoBehaviour
 			airUnits = new Dictionary<string, int> { { "Enemy AC130 Above!", r1 }, { "Fairchild Republic A-10 Thunderbolt II", r2 }, { "F-22", r3 }, { "F-35", r4 } };
 
 			//Silos are tile based but can only have like 5 per chunk
-			tileBuildings = new Dictionary<string, int> { { "Missile Silos", r1 }, { "Forts", r2 }, { "Railroads", r3 } };
+			//Airports have levels and store planes
+			//Carriers work like airports
+			//Planes have ranges from the tile if carrier/city or tile? they are stationed in
+			//maybe airports are tile based?
+			//maybe factories are also tile buildings? I want some city buildings but im not sure exactly what
+			tileBuildings = new Dictionary<string, int> { { "Missile Silos", r1 }, { "Forts", r2 }, { "Railroads", r3 }, { "Airport", r3 } };
 
 			#endregion
 		}

@@ -57,11 +57,11 @@ public class CameraController : MonoBehaviour
 		if (Input.GetMouseButtonDown(0))
 		{
 			currentTile = InteractWithMesh(data);
-			if (currentTile.tile.material == "Stone")
+			if (currentTile.tile.tileType == "Stone")
 			{
 				SetTileUVs(currentTile, "Grass");
 			}
-			else if (currentTile.tile.material == "Grass" || currentTile.tile.material == "Selected_Tile")
+			else if (currentTile.tile.tileType == "Grass" || currentTile.tile.tileType == "Selected_Tile")
 			{
 				SetTileUVs(currentTile, "Stone");
 			}
@@ -126,14 +126,14 @@ public class CameraController : MonoBehaviour
 		}
 	}
 
-	void SetTileUVs(MeshInteractionResult tileToSet, string material)
+	void SetTileUVs(MeshInteractionResult tileToSet, string tileType)
 	{
 		Vector2[] tempMeshUVs = tileToSet.mesh.uv;
 		/*for (int zz = 0; zz < 4; zz++)
 		{
 			tempMeshUVs[tileToSet.uvIndex + zz] = data.TileMap[material][zz];
 		}*/
-		Debug.Log("UV: " + tileToSet.uvIndex);
+		//Debug.Log("UV: " + tileToSet.uvIndex);
 		tempMeshUVs[tileToSet.uvIndex] = new Vector2(0.296f, 0);
 		tempMeshUVs[tileToSet.uvIndex + 1] = new Vector2(0.23f, 0.133f);
 		tempMeshUVs[tileToSet.uvIndex + 2] = new Vector2(0.296f, 0.266f);
@@ -143,7 +143,7 @@ public class CameraController : MonoBehaviour
 
 		tileToSet.mesh.uv = tempMeshUVs;
 
-		tileToSet.tile.material = material;
+		tileToSet.tile.tileType = tileType;
 		data.Map[tileToSet.chunkIndex].tiles[tileToSet.tileIndex] = tileToSet.tile;
 	}
 
@@ -198,6 +198,8 @@ public class CameraController : MonoBehaviour
 
 					Dictionary<int, MapData.Tile> tiles = data.Map[chunkIndex].tiles;
 					tile = tiles[tileIndex];
+
+					Debug.Log("===========================================================================================");
 				}
 			}
 		}

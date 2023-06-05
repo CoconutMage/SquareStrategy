@@ -19,7 +19,6 @@ public class Chunk : MonoBehaviour
 	}
 	void Start()
 	{
-	
 		Generate();
 	}
 
@@ -122,7 +121,7 @@ public class Chunk : MonoBehaviour
 					uv[0 + zz] = data.TileMap["Stone"][zz];
 				}*/
 
-				data.PopulateChunkTileData(chunkIndex, 0, new Vector2(0, 0), "Stone");
+				data.PopulateChunkTileData(chunkIndex, index, new Vector2(0, 0), "Stone");
 			}
 			//y++;
 		}

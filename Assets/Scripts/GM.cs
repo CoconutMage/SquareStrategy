@@ -40,7 +40,7 @@ public class GM : MonoBehaviour
 	/*-------SERIALIZE EVERYTHING PAST HERE-------*/
 	//STATS
 
-	public Dictionary<string, BigInteger> stats = new Dictionary<string, BigInteger>
+	public Dictionary<string, BigInteger> resources = new Dictionary<string, BigInteger>
 	{
 		{"b0ins", 0},
 		{"researchPoints", 0},
@@ -113,9 +113,9 @@ public class GM : MonoBehaviour
 
 	void GlobalResourceManager()
 	{
-		stats.TryGetValue("researchPoints", out BigInteger rp);
-		stats.TryGetValue("b0ins", out BigInteger b0ins);
-		stats.TryGetValue("loan", out BigInteger loan);
+		resources.TryGetValue("researchPoints", out BigInteger rp);
+		resources.TryGetValue("b0ins", out BigInteger b0ins);
+		resources.TryGetValue("loan", out BigInteger loan);
 
 		researchText.text = "Research: " + rp;
 		b0inCounter.text = "$" + b0ins;
