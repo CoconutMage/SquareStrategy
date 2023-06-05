@@ -22,7 +22,6 @@ public class Map : MonoBehaviour
 		Instance = this;
 
 		data = MapData.Instance;
-
 		Generate();
 	}
 
