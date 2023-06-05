@@ -31,10 +31,7 @@ public class CameraController : MonoBehaviour
 		Instance = this;
 
 		data = MapData.Instance;
-	}
 
-	void Start()
-	{
 		ui = UI.Instance;
 		startingCameraSize = Camera.main.orthographicSize;
 
@@ -132,10 +129,18 @@ public class CameraController : MonoBehaviour
 	void SetTileUVs(MeshInteractionResult tileToSet, string material)
 	{
 		Vector2[] tempMeshUVs = tileToSet.mesh.uv;
-		for (int zz = 0; zz < 4; zz++)
+		/*for (int zz = 0; zz < 4; zz++)
 		{
 			tempMeshUVs[tileToSet.uvIndex + zz] = data.TileMap[material][zz];
-		}
+		}*/
+		Debug.Log("UV: " + tileToSet.uvIndex);
+		tempMeshUVs[tileToSet.uvIndex] = new Vector2(0.296f, 0);
+		tempMeshUVs[tileToSet.uvIndex + 1] = new Vector2(0.23f, 0.133f);
+		tempMeshUVs[tileToSet.uvIndex + 2] = new Vector2(0.296f, 0.266f);
+		tempMeshUVs[tileToSet.uvIndex + 3] = new Vector2(0.445f, 0.266f);
+		tempMeshUVs[tileToSet.uvIndex + 4] = new Vector2(0.69f, 0.133f);
+		tempMeshUVs[tileToSet.uvIndex + 5] = new Vector2(0.445f, 0);
+
 		tileToSet.mesh.uv = tempMeshUVs;
 
 		tileToSet.tile.material = material;
@@ -179,13 +184,16 @@ public class CameraController : MonoBehaviour
 				meshUVs = mesh.uv;
 				triangles = mesh.triangles;
 				triangleIndex = hit.triangleIndex;
+				Debug.Log("Triangle Index: " + triangleIndex);
 
 				if (triangleIndex < triangles.Length / 3)
 				{
 					uvIndex = triangles[triangleIndex * 3];
 					hitUVCoords = meshUVs[uvIndex];
 
-					tileIndex = uvIndex / 4;
+					tileIndex = uvIndex / 6;
+					Debug.Log("Tile Index: " + tileIndex);
+					Debug.Log("UV Index: " + uvIndex);
 					chunkIndex = hit.transform.gameObject.GetComponent<Chunk>().chunkIndex;
 
 					Dictionary<int, MapData.Tile> tiles = data.Map[chunkIndex].tiles;
