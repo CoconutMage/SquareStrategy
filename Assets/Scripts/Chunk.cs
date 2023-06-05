@@ -70,12 +70,12 @@ public class Chunk : MonoBehaviour
 					triangles[ti + 10] = i + 3;
 					triangles[ti + 11] = i + 4;
 
-					uv[i] = new Vector2(0.066f, 0);
-					uv[i + 1] = new Vector2(0, 0.133f);
-					uv[i + 2] = new Vector2(0.066f, 0.266f);
-					uv[i + 3] = new Vector2(0.215f, 0.266f);
-					uv[i + 4] = new Vector2(0.230f, 0.133f);
-					uv[i + 5] = new Vector2(0.215f, 0);
+					uv[i] = new Vector2(.072168f, 0);
+					uv[i + 1] = new Vector2(0, 0.125f);
+					uv[i + 2] = new Vector2(.072168f, .25f);
+					uv[i + 3] = new Vector2(.19921875f, .25f);
+					uv[i + 4] = new Vector2(.28125f, 0.125f);
+					uv[i + 5] = new Vector2(.19921875f, 0);
 				}
 				else
                 {
@@ -104,12 +104,12 @@ public class Chunk : MonoBehaviour
 					triangles[ti + 10] = i + 3;
 					triangles[ti + 11] = i + 4;
 
-					uv[i] = new Vector2(0.066f, 0);
-					uv[i + 1] = new Vector2(0, 0.133f);
-					uv[i + 2] = new Vector2(0.066f, 0.266f);
-					uv[i + 3] = new Vector2(0.215f, 0.266f);
-					uv[i + 4] = new Vector2(0.230f, 0.133f);
-					uv[i + 5] = new Vector2(0.215f, 0);
+					uv[i] = new Vector2(.072168f, 0);
+					uv[i + 1] = new Vector2(0, 0.125f);
+					uv[i + 2] = new Vector2(.072168f, .25f);
+					uv[i + 3] = new Vector2(.19921875f, .25f);
+					uv[i + 4] = new Vector2(.28125f, 0.125f);
+					uv[i + 5] = new Vector2(.19921875f, 0);
 					y -= (0.5f * height);
 				}
 				//y++;
