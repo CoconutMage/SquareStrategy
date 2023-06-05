@@ -6,7 +6,7 @@ public class MapData : MonoBehaviour
 	public static MapData Instance { get; private set; }
 	public Dictionary<int, Chunk> Map;
 
-	private void Start()
+	private void Awake()
 	{
 		if (Instance != null && Instance != this)
 		{

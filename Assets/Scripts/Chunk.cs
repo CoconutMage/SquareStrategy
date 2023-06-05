@@ -10,13 +10,16 @@ public class Chunk : MonoBehaviour
 	public int chunkIndex;
 	public Vector2 chunkPosition;
 
-	private void Start()
+	private void Awake()
 	{
 		data = MapData.Instance;
 		map = Map.Instance;
 
 		chunkIndex = map.chunkIndex;
-
+	}
+	void Start()
+	{
+	
 		Generate();
 	}
 

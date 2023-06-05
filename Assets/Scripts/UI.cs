@@ -13,7 +13,7 @@ public class UI : MonoBehaviour
 
 
 	public static UI Instance { get; private set; }
-	void Start()
+	void Awake()
 	{
 		if (Instance != null && Instance != this)
 		{

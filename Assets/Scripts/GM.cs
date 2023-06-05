@@ -74,7 +74,7 @@ public class GM : MonoBehaviour
 
 	/*-------FUNCTIONS, NO NEED TO SERIALIZE-------*/
 
-	void Start()
+	void Awake()
 	{
 		if (Instance != null && Instance != this)
 		{
