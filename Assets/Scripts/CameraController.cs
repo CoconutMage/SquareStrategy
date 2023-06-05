@@ -21,7 +21,7 @@ public class CameraController : MonoBehaviour
 	public GameObject map;
 	Vector3 offset;
 
-	void Awake()
+	void Start()
 	{
 		if (Instance != null && Instance != this)
 		{
@@ -31,10 +31,6 @@ public class CameraController : MonoBehaviour
 		Instance = this;
 
 		data = MapData.Instance;
-	}
-
-	void Start()
-	{
 		ui = UI.Instance;
 		startingCameraSize = Camera.main.orthographicSize;
 
