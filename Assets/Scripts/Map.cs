@@ -12,7 +12,7 @@ public class Map : MonoBehaviour
 	MapData data;
 	Chunk chunkScript;
 
-	private void Awake()
+	private void Start()
 	{
 		if (Instance != null && Instance != this)
 		{
@@ -22,10 +22,6 @@ public class Map : MonoBehaviour
 		Instance = this;
 
 		data = MapData.Instance;
-	}
-
-	private void Start()
-	{
 		Generate();
 	}
 
