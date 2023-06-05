@@ -17,9 +17,9 @@ public class Chunk : MonoBehaviour
 
 		chunkIndex = map.chunkIndex;
 	}
-
-	private void Start()
+	void Start()
 	{
+	
 		Generate();
 	}
 

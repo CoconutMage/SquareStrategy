@@ -31,7 +31,7 @@ public class CameraController : MonoBehaviour
 		Instance = this;
 
 		data = MapData.Instance;
-
+		
 		ui = UI.Instance;
 		startingCameraSize = Camera.main.orthographicSize;
 

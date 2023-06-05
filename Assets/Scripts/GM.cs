@@ -73,7 +73,8 @@ public class GM : MonoBehaviour
 	//Construction
 
 	/*-------FUNCTIONS, NO NEED TO SERIALIZE-------*/
-	private void Awake()
+
+	void Awake()
 	{
 		if (Instance != null && Instance != this)
 		{
@@ -82,10 +83,7 @@ public class GM : MonoBehaviour
 		}
 		Instance = this;
 		tickEvent.AddListener(Tick);
-	}
 
-	void Start()
-	{
 		data = MapData.Instance;
 		cam = CameraController.Instance;
 		ui = UI.Instance;
