@@ -66,9 +66,9 @@ public class Chunk : MonoBehaviour
 					triangles[ti + 7] = i + 4;
 					triangles[ti + 8] = i + 5;
 
-					triangles[ti + 9] = i + 4;
-					triangles[ti + 10] = i + 2;
-					triangles[ti + 11] = i + 3;
+					triangles[ti + 9] = i + 2;
+					triangles[ti + 10] = i + 3;
+					triangles[ti + 11] = i + 4;
 
 					uv[i] = new Vector2(0.066f, 0);
 					uv[i + 1] = new Vector2(0, 0.133f);
@@ -100,9 +100,9 @@ public class Chunk : MonoBehaviour
 					triangles[ti + 7] = i + 4;
 					triangles[ti + 8] = i + 5;
 
-					triangles[ti + 9] = i + 4;
-					triangles[ti + 10] = i + 2;
-					triangles[ti + 11] = i + 3;
+					triangles[ti + 9] = i + 2;
+					triangles[ti + 10] = i + 3;
+					triangles[ti + 11] = i + 4;
 
 					uv[i] = new Vector2(0.066f, 0);
 					uv[i + 1] = new Vector2(0, 0.133f);
