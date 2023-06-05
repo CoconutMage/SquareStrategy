@@ -84,7 +84,8 @@ public class CameraController : MonoBehaviour
 			{
 				SetTileUVs(previousTile, "Stone");
 			}
-			ui.DisplayUnits(currentTile.tile.units);
+			ui.DisplayUnits(currentTile.tile.landUnits, currentTile.tile.airUnits);
+			ui.DisplayResources(currentTile.tile.resources);
 
 			SetTileUVs(currentTile, "Selected_Tile");
 			previousTile = currentTile;

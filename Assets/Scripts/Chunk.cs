@@ -16,6 +16,10 @@ public class Chunk : MonoBehaviour
 		map = Map.Instance;
 
 		chunkIndex = map.chunkIndex;
+	}
+
+	private void Start()
+	{
 		Generate();
 	}
 
