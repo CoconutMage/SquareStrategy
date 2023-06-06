@@ -113,7 +113,7 @@ public class MapData : MonoBehaviour
 
 		public Dictionary<string, int> resources;
 
-		public Dictionary<string, int> units;
+		public Dictionary<string, int> waterUnits;
 
 		public WaterTile(int aa, int ab, Vector2 ac, string ad, int r1, int r2, int r3, int r4, int r5)
 		{
@@ -135,12 +135,13 @@ public class MapData : MonoBehaviour
 			#endregion
 
 			#region Mutable
-			units = new Dictionary<string, int> 
-			{ 
-				{ "Zumwalt class guided missile destroyer", r1 }, 
-				{ "Arleigh Burke class guided-missile destroyer", r2 }, 
-				{ "Gerald R. Ford Class Aircraft Carrier: John F. Kennedy", r3 }, 
-				{ "Iowa Class Battleship", r4 } 
+			waterUnits = new Dictionary<string, int>
+			{
+
+				{ "Zumwalt class guided missile destroyer", r1 },
+				{ "Arleigh Burke class guided-missile destroyer", r2 },
+				{ "Gerald R. Ford Class Aircraft Carrier: John F. Kennedy", r3 },
+				{ "Iowa Class Battleship", r4 }
 			};
 
 			#endregion
@@ -149,11 +150,13 @@ public class MapData : MonoBehaviour
 
 	public struct City
 	{
+		public string name;
 		public int population;
 		public Dictionary<string, int> cityBuildings;
 
 		public City(int aa, int r1 = 0, int r2 = 1, int r3 = 2, int r4 = 3)
 		{
+			name = "Washington D.C.";
 			population = 37468000;
 
 			cityBuildings = new Dictionary<string, int>

@@ -77,4 +77,9 @@ public class UI : MonoBehaviour
 		resourceText.text = temp;
 	}
 
+	public void DisplayCountryStatistics(int countryID)
+	{ 
+		
+	}
+
 }
