@@ -39,79 +39,51 @@ public class Chunk : MonoBehaviour
 		int[] triangles = new int[(xSize * ySize * 6) * 8];
 		float height = 1;
 		float y = 0;
+		float x;
+		float colNum = 0;
+		float offsetSide = (height / Mathf.Tan(60 * Mathf.Deg2Rad));
+		float offsetEdge = (height * 0.5f) * Mathf.Tan(30 * Mathf.Deg2Rad);
 
 		for (int i = 0, ti = 0, index = 0; y < ySize; y++)
 		{
-			for (int x = 0; x < xSize; x++, i += 6, ti += 12, index++)
+			colNum = 0;
+			for (x = 0; colNum < xSize; x += offsetSide + offsetEdge, i += 6, ti += 12, index++)
 			{
-				if (x % 2 == 0)
-                {
-					vertices[i] = new Vector3(x, y);
-					vertices[i + 1] = new Vector3(x - (height * 0.5f) * Mathf.Tan(30 * Mathf.Deg2Rad), y + (0.5f * height));
-					vertices[i + 2] = new Vector3(x, y + height);
+				if (colNum % 2 != 0) y += (0.5f * height);
 
-					vertices[i + 3] = new Vector3(x + (height / Mathf.Tan(60 * Mathf.Deg2Rad)), y + height);
-					vertices[i + 4] = new Vector3(x + (height * 0.5f) * Mathf.Tan(30 * Mathf.Deg2Rad) + (height / Mathf.Tan(60 * Mathf.Deg2Rad)), y + (0.5f * height));
-					vertices[i + 5] = new Vector3(x + (height / Mathf.Tan(60 * Mathf.Deg2Rad)), y);
+				vertices[i] = new Vector3(x, y);
+				vertices[i + 1] = new Vector3(x - offsetEdge, y + (0.5f * height));
+				vertices[i + 2] = new Vector3(x, y + height);
 
-					triangles[ti] = i;
-					triangles[ti + 1] = i + 1;
-					triangles[ti + 2] = i + 2;
+				vertices[i + 3] = new Vector3(x + offsetSide, y + height);
+				vertices[i + 4] = new Vector3(x + offsetEdge + offsetSide, y + (0.5f * height));
+				vertices[i + 5] = new Vector3(x + offsetSide, y);
 
-					triangles[ti + 3] = i;
-					triangles[ti + 4] = i + 2;
-					triangles[ti + 5] = i + 5;
+				triangles[ti] = i;
+				triangles[ti + 1] = i + 1;
+				triangles[ti + 2] = i + 2;
 
-					triangles[ti + 6] = i + 2;
-					triangles[ti + 7] = i + 4;
-					triangles[ti + 8] = i + 5;
+				triangles[ti + 3] = i;
+				triangles[ti + 4] = i + 2;
+				triangles[ti + 5] = i + 5;
 
-					triangles[ti + 9] = i + 2;
-					triangles[ti + 10] = i + 3;
-					triangles[ti + 11] = i + 4;
+				triangles[ti + 6] = i + 2;
+				triangles[ti + 7] = i + 4;
+				triangles[ti + 8] = i + 5;
 
-					uv[i] = new Vector2(.072168f, 0);
-					uv[i + 1] = new Vector2(0, 0.125f);
-					uv[i + 2] = new Vector2(.072168f, .25f);
-					uv[i + 3] = new Vector2(.19921875f, .25f);
-					uv[i + 4] = new Vector2(.28125f, 0.125f);
-					uv[i + 5] = new Vector2(.19921875f, 0);
-				}
-				else
-                {
-					y += (0.5f * height);
-					vertices[i] = new Vector3(x, y);
-					vertices[i + 1] = new Vector3(x - (height * 0.5f) * Mathf.Tan(30 * Mathf.Deg2Rad), y + (0.5f * height));
-					vertices[i + 2] = new Vector3(x, y + height);
+				triangles[ti + 9] = i + 2;
+				triangles[ti + 10] = i + 3;
+				triangles[ti + 11] = i + 4;
 
-					vertices[i + 3] = new Vector3(x + (height / Mathf.Tan(60 * Mathf.Deg2Rad)), y + height);
-					vertices[i + 4] = new Vector3(x + (height * 0.5f) * Mathf.Tan(30 * Mathf.Deg2Rad) + (height / Mathf.Tan(60 * Mathf.Deg2Rad)), y + (0.5f * height));
-					vertices[i + 5] = new Vector3(x + (height / Mathf.Tan(60 * Mathf.Deg2Rad)), y);
+				uv[i] = new Vector2(.072168f, 0);
+				uv[i + 1] = new Vector2(0, 0.125f);
+				uv[i + 2] = new Vector2(.072168f, .25f);
+				uv[i + 3] = new Vector2(.19921875f, .25f);
+				uv[i + 4] = new Vector2(.26125f, 0.125f);
+				uv[i + 5] = new Vector2(.19921875f, 0);
 
-					triangles[ti] = i;
-					triangles[ti + 1] = i + 1;
-					triangles[ti + 2] = i + 2;
+				if (colNum % 2 != 0) y -= (0.5f * height);
 
-					triangles[ti + 3] = i;
-					triangles[ti + 4] = i + 2;
-					triangles[ti + 5] = i + 5;
-
-					triangles[ti + 6] = i + 2;
-					triangles[ti + 7] = i + 4;
-					triangles[ti + 8] = i + 5;
-
-					triangles[ti + 9] = i + 2;
-					triangles[ti + 10] = i + 3;
-					triangles[ti + 11] = i + 4;
-
-					uv[i] = new Vector2(.072168f, 0);
-					uv[i + 1] = new Vector2(0, 0.125f);
-					uv[i + 2] = new Vector2(.072168f, .25f);
-					uv[i + 3] = new Vector2(.19921875f, .25f);
-					uv[i + 4] = new Vector2(.28125f, 0.125f);
-					uv[i + 5] = new Vector2(.19921875f, 0);
-					y -= (0.5f * height);
-				}
 				//y++;
 
 				//PERLIN NOISE CODE USED TO GO HERE
@@ -122,6 +94,7 @@ public class Chunk : MonoBehaviour
 				}*/
 
 				data.PopulateChunkTileData(chunkIndex, index, new Vector2(0, 0), "Stone");
+				colNum++;
 			}
 			//y++;
 		}

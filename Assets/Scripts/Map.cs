@@ -28,11 +28,16 @@ public class Map : MonoBehaviour
 
 	void Generate()
 	{
+		float height = 1;
+		float offsetSide = (height / Mathf.Tan(60 * Mathf.Deg2Rad));
+		float offsetEdge = (height * 0.5f) * Mathf.Tan(30 * Mathf.Deg2Rad);
+		int chunkSize = 10;
+
 		for (int y = 0; y < ySize; y++)
 		{
 			for (int x = 0; x < xSize; x++, chunkIndex++)
 			{
-				Vector2 chunkPos = new Vector2(x * 10 + x, y * 10 + y);
+				Vector2 chunkPos = new Vector2(x * chunkSize * (offsetSide + offsetEdge), y * chunkSize * height);
 				data.PopulateChunkData(chunkIndex, chunkPos);
 
 				//Physical Characteristics

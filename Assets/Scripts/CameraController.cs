@@ -134,12 +134,12 @@ public class CameraController : MonoBehaviour
 			tempMeshUVs[tileToSet.uvIndex + zz] = data.TileMap[material][zz];
 		}*/
 		//Debug.Log("UV: " + tileToSet.uvIndex);
-		tempMeshUVs[tileToSet.uvIndex] = new Vector2(0.296f, 0);
-		tempMeshUVs[tileToSet.uvIndex + 1] = new Vector2(0.23f, 0.133f);
-		tempMeshUVs[tileToSet.uvIndex + 2] = new Vector2(0.296f, 0.266f);
-		tempMeshUVs[tileToSet.uvIndex + 3] = new Vector2(0.445f, 0.266f);
-		tempMeshUVs[tileToSet.uvIndex + 4] = new Vector2(0.69f, 0.133f);
-		tempMeshUVs[tileToSet.uvIndex + 5] = new Vector2(0.445f, 0);
+		tempMeshUVs[tileToSet.uvIndex] = new Vector2(.3828125f, .01171875f);
+		tempMeshUVs[tileToSet.uvIndex + 1] = new Vector2(.3046875f, .1328125f);
+		tempMeshUVs[tileToSet.uvIndex + 2] = new Vector2(.3828125f, .2578125f);
+		tempMeshUVs[tileToSet.uvIndex + 3] = new Vector2(.50390625f, .2578125f);
+		tempMeshUVs[tileToSet.uvIndex + 4] = new Vector2(.56203125f, .1328125f);
+		tempMeshUVs[tileToSet.uvIndex + 5] = new Vector2(.50390625f, .01171875f);
 
 		tileToSet.mesh.uv = tempMeshUVs;
 
@@ -188,7 +188,7 @@ public class CameraController : MonoBehaviour
 
 				if (triangleIndex < triangles.Length / 3)
 				{
-					uvIndex = triangles[triangleIndex * 3];
+					uvIndex = (triangleIndex / 4) * 6;//triangles[triangleIndex * 3];
 					hitUVCoords = meshUVs[uvIndex];
 
 					tileIndex = uvIndex / 6;
