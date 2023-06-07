@@ -135,12 +135,28 @@ public class CameraController : MonoBehaviour
 			tempMeshUVs[tileToSet.uvIndex + zz] = data.TileMap[material][zz];
 		}*/
 		//Debug.Log("UV: " + tileToSet.uvIndex);
-		tempMeshUVs[tileToSet.uvIndex] = new Vector2(.3828125f, .01171875f);
+		/*tempMeshUVs[tileToSet.uvIndex] = new Vector2(.3828125f, .01171875f);
 		tempMeshUVs[tileToSet.uvIndex + 1] = new Vector2(.3046875f, .1328125f);
 		tempMeshUVs[tileToSet.uvIndex + 2] = new Vector2(.3828125f, .2578125f);
 		tempMeshUVs[tileToSet.uvIndex + 3] = new Vector2(.50390625f, .2578125f);
 		tempMeshUVs[tileToSet.uvIndex + 4] = new Vector2(.56203125f, .1328125f);
-		tempMeshUVs[tileToSet.uvIndex + 5] = new Vector2(.50390625f, .01171875f);
+		tempMeshUVs[tileToSet.uvIndex + 5] = new Vector2(.50390625f, .01171875f);*/
+
+		float oneX = 18f, twoX = 1f, threeX = 18f, fourX = 53f, fiveX = 70.5f, sixX = 53f;
+		float oneY = 2f, twoY = 32f, threeY = 62f, fourY = 62f, fiveY = 32f, sixY = 2f;
+		//float sizeX = 72, sizeY = 63;
+		float sizeX = 288, sizeY = 256;
+		//float modifierX = -0.5f, modifierY = 0.5f;
+		float modifierX = -0.5f, modifierY = 0.5f;
+		int textureIndexX = 1, textureIndexY = 1;
+		modifierX -= 72;
+
+		tempMeshUVs[tileToSet.uvIndex] = new Vector2(((oneX - modifierX) / sizeX) * textureIndexX, ((oneY - modifierY) / sizeY) * textureIndexY);
+		tempMeshUVs[tileToSet.uvIndex + 1] = new Vector2(((twoX - modifierX) / sizeX) * textureIndexX, ((twoY - modifierY) / sizeY) * textureIndexY);
+		tempMeshUVs[tileToSet.uvIndex + 2] = new Vector2(((threeX - modifierX) / sizeX) * textureIndexX, ((threeY - modifierY) / sizeY) * textureIndexY);
+		tempMeshUVs[tileToSet.uvIndex + 3] = new Vector2(((fourX - modifierX) / sizeX) * textureIndexX, ((fourY - modifierY) / sizeY) * textureIndexY);
+		tempMeshUVs[tileToSet.uvIndex + 4] = new Vector2(((fiveX - modifierX) / sizeX) * textureIndexX, ((fiveY - modifierY) / sizeY) * textureIndexY);
+		tempMeshUVs[tileToSet.uvIndex + 5] = new Vector2(((sixX - modifierX) / sizeX) * textureIndexX, ((sixY - modifierY) / sizeY) * textureIndexY);
 
 		tileToSet.mesh.uv = tempMeshUVs;
 
