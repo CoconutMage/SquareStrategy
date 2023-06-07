@@ -75,12 +75,34 @@ public class Chunk : MonoBehaviour
 				triangles[ti + 10] = i + 3;
 				triangles[ti + 11] = i + 4;
 
-				uv[i] = new Vector2(.072168f, 0);
-				uv[i + 1] = new Vector2(0, 0.125f);
-				uv[i + 2] = new Vector2(.072168f, .25f);
-				uv[i + 3] = new Vector2(.19921875f, .25f);
-				uv[i + 4] = new Vector2(.26125f, 0.125f);
-				uv[i + 5] = new Vector2(.19921875f, 0);
+				int r = Random.Range(0,2);
+				if (r == 0)
+				{
+					uv[i] = new Vector2(.072168f, 0);
+					uv[i + 1] = new Vector2(0, 0.125f);
+					uv[i + 2] = new Vector2(.072168f, .25f);
+					uv[i + 3] = new Vector2(.19921875f, .25f);
+					uv[i + 4] = new Vector2(.26125f, 0.125f);
+					uv[i + 5] = new Vector2(.19921875f, 0);
+				}
+				else
+				{
+					uv[i + 0] = new Vector2(.3828125f, .01171875f);
+					uv[i + 1] = new Vector2(.3046875f, .1328125f);
+					uv[i + 2] = new Vector2(.3828125f, .2578125f);
+					uv[i + 3] = new Vector2(.50390625f, .2578125f);
+					uv[i + 4] = new Vector2(.56203125f, .1328125f);
+					uv[i + 5] = new Vector2(.50390625f, .01171875f);
+				}
+
+				/*
+					uv[i + 0] = new Vector2(0.6796875f, 0.98828125f);
+					uv[i + 1] = new Vector2(0.6015625f, 0.87109375f);
+					uv[i + 2] = new Vector2(0.6796875f, 0.7421875f);
+					uv[i + 3] = new Vector2(0.80078125f, 0.7421875f);
+					uv[i + 4] = new Vector2(0.87890625f, 0.8671875f);
+					uv[i + 5] = new Vector2(0.80078125f, 0.98828125f);
+				*/
 
 				if (colNum % 2 != 0) y -= (0.5f * height);
 
@@ -93,7 +115,7 @@ public class Chunk : MonoBehaviour
 					uv[0 + zz] = data.TileMap["Stone"][zz];
 				}*/
 
-				data.PopulateChunkTileData(chunkIndex, index, new Vector2(0, 0), "Stone");
+				data.PopulateChunkTileData(r, chunkIndex, index, new Vector2(0, 0), "Stone");
 				colNum++;
 			}
 			//y++;

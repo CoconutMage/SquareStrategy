@@ -28,17 +28,35 @@ public class MapData : MonoBehaviour
 		);
 	}
 
-	public void PopulateChunkTileData(int chunkIndex, int i, Vector2 pos, string material)
+	public void PopulateChunkTileData(int r, int chunkIndex, int i, Vector2 pos, string material)
 	{
-		Map[chunkIndex].tiles[i] = new Tile(
-			chunkIndex, 
-			i, 
-			pos, 
-			material,
-			false,
 
-			Random.Range(0,10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
-		);
+
+		if (r == 0)
+		{
+			Map[chunkIndex].tiles[i] = new Tile(
+				chunkIndex,
+				i,
+				pos,
+				material,
+				CountryData.nullCity,
+
+				Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
+			);
+		}
+		else if (r == 1)
+		{
+			Map[chunkIndex].tiles[i] = new Tile(
+				chunkIndex,
+				i,
+				pos,
+				material,
+				CountryData.WashingtonDC,
+
+				Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
+			);
+
+		}
 	}
 
 	public struct Chunk
@@ -64,7 +82,7 @@ public class MapData : MonoBehaviour
 		public Vector2 coordinates;
 		public string tileType;
 
-		public bool city;
+		public CountryData.City city;
 		public Dictionary<string, int> resources;
 
 		public Dictionary<string, int> landUnits;
@@ -72,7 +90,7 @@ public class MapData : MonoBehaviour
 
 		public Dictionary<string, int> tileBuildings;
 
-		public Tile(int aa, int ab, Vector2 ac, string ad, bool ae, int r1, int r2, int r3, int r4, int r5)
+		public Tile(int aa, int ab, Vector2 ac, string ad, CountryData.City ae, int r1, int r2, int r3, int r4, int r5)
 		{
 			#region Immutable Data
 			//Tile Info
@@ -113,7 +131,7 @@ public class MapData : MonoBehaviour
 
 		public Dictionary<string, int> resources;
 
-		public Dictionary<string, int> waterUnits;
+		public Dictionary<string, int> navalUnits;
 
 		public WaterTile(int aa, int ab, Vector2 ac, string ad, int r1, int r2, int r3, int r4, int r5)
 		{
@@ -135,7 +153,7 @@ public class MapData : MonoBehaviour
 			#endregion
 
 			#region Mutable
-			waterUnits = new Dictionary<string, int>
+			navalUnits = new Dictionary<string, int>
 			{
 
 				{ "Zumwalt class guided missile destroyer", r1 },
@@ -148,29 +166,8 @@ public class MapData : MonoBehaviour
 		}
 	}
 
-	public struct City
-	{
-		public string name;
-		public int population;
-		public Dictionary<string, int> cityBuildings;
-
-		public City(int aa, int r1 = 0, int r2 = 1, int r3 = 2, int r4 = 3)
-		{
-			name = "Washington D.C.";
-			population = 37468000;
-
-			cityBuildings = new Dictionary<string, int>
-			{
-				{ "Civilian Factories", r1 },
-				{ "Military Factories", r2 },
-				{ "Dockyards", r3 },
-				{ "Infrastructure", r4 }
-			};
-		}
-	}
-
-	public Tile nullTile = new(-1, -1, new Vector2(0,0), "Null", false, -1, -1, -1, -1, -1);
-	public Tile nullWaterTile = new(-1, -1, new Vector2(0, 0), "Null", false, -1, -1, -1, -1, -1);
+	public Tile nullTile = new(-1, -1, new Vector2(0,0), "Null", CountryData.nullCity, -1, -1, -1, -1, -1);
+	public Tile nullWaterTile = new(-1, -1, new Vector2(0, 0), "Null", CountryData.nullCity, -1, -1, -1, -1, -1);
 
 	public Dictionary<string, Vector2[]> TileMap = new()
 	{

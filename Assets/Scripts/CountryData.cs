@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using static MapData;
 
 public class CountryData : MonoBehaviour
 {
@@ -14,8 +15,11 @@ public class CountryData : MonoBehaviour
 			return;
 		}
 		Instance = this;
+
+		Countries = new Dictionary<int, Country>();
 	}
 
+	/*
 	void Start()
 	{
 		CreateCountry
@@ -26,6 +30,7 @@ public class CountryData : MonoBehaviour
 			new Leader("John Moses Browning", "God of Guns", 99999, "More Gun")
 		);
 	}
+	*/
 
 	void CreateCountry(int id, string name, long pop, Leader lead)
 	{
@@ -48,9 +53,9 @@ public class CountryData : MonoBehaviour
 
 		public Leader leader;
 
-		public int landUnitAmount;
-		public int airUnitAmount;
-		public int waterUnitAmount;
+		public int armyUnitAmount;
+		public int airForceUnitAmount;
+		public int navalUnitAmount;
 
 		public Dictionary<string, int> resources;
 		public Dictionary<string, int> army;
@@ -58,6 +63,11 @@ public class CountryData : MonoBehaviour
 		public Dictionary<string, int> Navy;
 
 		public Dictionary<string, int> tileBuildings;
+
+		public static Country nullCountry = new Country(-1, "Null", -1, nullLeader);
+		public static Leader nullLeader = new Leader("Null", "Null", 0, "Null");
+
+		public static Country USA = new Country(0, "The United States of America", 333287557, new Leader("John Moses Browning", "God of Guns", 99999, "More Gun"));
 
 		public Country(int aa, string ab, long ac, Leader ad)
 		{
@@ -67,10 +77,10 @@ public class CountryData : MonoBehaviour
 
 			leader = ad;
 
-			landUnitAmount = 0;
-			airUnitAmount = 0;
+			armyUnitAmount = 0;
+			airForceUnitAmount = 0;
 			//Tonnage?
-			waterUnitAmount = 0;
+			navalUnitAmount = 0;
 
 			resources = new Dictionary<string, int> { { "Iron", 9 }, { "Uranium", 9 }, { "Oil", 9 }, { "Corn", 9 }, { "Wheat", 9 } };
 			army = new Dictionary<string, int> { { "M1 Abrams Main Battle Tank", 9 }, { "Infantry", 9 }, { "Howitzer", 9 }, { "Railway Gun", 9 } };
@@ -85,11 +95,42 @@ public class CountryData : MonoBehaviour
 
 		void UnitMath()
 		{
-			foreach (var unit in army) landUnitAmount += unit.Value;
-			foreach (var unit in airForce) airUnitAmount += unit.Value;
-			foreach (var unit in Navy) waterUnitAmount += unit.Value;
+			foreach (var unit in army) armyUnitAmount += unit.Value;
+			foreach (var unit in airForce) airForceUnitAmount += unit.Value;
+			foreach (var unit in Navy) navalUnitAmount += unit.Value;
 		}
 	}
+
+	public struct City
+	{
+		public string name;
+
+		public CountryData.Country parentCountry;
+
+		public int population;
+		public Dictionary<string, int> cityBuildings;
+
+		public City(string aa, Country c, int ab, int r1 = 0, int r2 = 1, int r3 = 2, int r4 = 3)
+		{
+			name = aa;
+
+			parentCountry = c;
+
+			population = ab;
+
+			cityBuildings = new Dictionary<string, int>
+			{
+				{ "Civilian Factories", r1 },
+				{ "Military Factories", r2 },
+				{ "Dockyards", r3 },
+				{ "Infrastructure", r4 }
+			};
+		}
+	}
+
+	public static City WashingtonDC = new City("Washington D.C.", Country.USA, 689545);
+
+	public static City nullCity = new City("Null", Country.nullCountry, -1);
 
 	public struct Leader
 	{
@@ -110,6 +151,16 @@ public class CountryData : MonoBehaviour
 
 			politicalParty = ac;
 			termsServed = 0;
+		}
+	}
+
+	public struct Government
+	{
+		public string name;
+
+		public Government(string aa)
+		{
+			name = aa;
 		}
 	}
 }

@@ -83,6 +83,7 @@ public class CameraController : MonoBehaviour
 			}
 			ui.DisplayUnits(currentTile.tile.landUnits, currentTile.tile.airUnits);
 			ui.DisplayResources(currentTile.tile.resources);
+			ui.DisplayCity(currentTile.tile.city);
 
 			SetTileUVs(currentTile, "Selected_Tile");
 			previousTile = currentTile;
@@ -184,7 +185,7 @@ public class CameraController : MonoBehaviour
 				meshUVs = mesh.uv;
 				triangles = mesh.triangles;
 				triangleIndex = hit.triangleIndex;
-				Debug.Log("Triangle Index: " + triangleIndex);
+				//Debug.Log("Triangle Index: " + triangleIndex);
 
 				if (triangleIndex < triangles.Length / 3)
 				{
@@ -192,14 +193,14 @@ public class CameraController : MonoBehaviour
 					hitUVCoords = meshUVs[uvIndex];
 
 					tileIndex = uvIndex / 6;
-					Debug.Log("Tile Index: " + tileIndex);
-					Debug.Log("UV Index: " + uvIndex);
+					//Debug.Log("Tile Index: " + tileIndex);
+					//Debug.Log("UV Index: " + uvIndex);
 					chunkIndex = hit.transform.gameObject.GetComponent<Chunk>().chunkIndex;
 
 					Dictionary<int, MapData.Tile> tiles = data.Map[chunkIndex].tiles;
 					tile = tiles[tileIndex];
 
-					Debug.Log("===========================================================================================");
+					//Debug.Log("===========================================================================================");
 				}
 			}
 		}

@@ -11,6 +11,10 @@ public class UI : MonoBehaviour
 	public TMP_Text waterUnitsText;
 	public TMP_Text resourceText;
 
+	public TMP_Text cityText;
+	public TMP_Text countryText;
+	public TMP_Text navyText;
+
 	public static UI Instance { get; private set; }
 	void Awake()
 	{
@@ -80,6 +84,44 @@ public class UI : MonoBehaviour
 	public void DisplayCountryStatistics(int countryID)
 	{ 
 		
+	}
+
+	public void DisplayCity(CountryData.City city)
+	{
+		if (!city.Equals(CountryData.nullCity))
+		{
+			cityText.text = city.name;
+			countryText.text = city.parentCountry.name + "\n" + city.parentCountry.leader.name;
+
+			Bazinga();
+		}
+		else
+		{
+			cityText.text = "";
+			countryText.text = "";
+			navyText.text = "";
+		}
+
+		void Bazinga()
+		{
+			string temp = "";
+			CountryData.Country country = city.parentCountry;
+
+			int i = 0;
+			foreach (var navalUnit in country.Navy)
+			{
+				temp += navalUnit.Key;
+				temp += ": ";
+				temp += navalUnit.Value;
+				i++;
+				if (i != country.Navy.Count)
+				{
+					temp += "\n";
+				}
+			}
+
+			navyText.text = temp;
+		}
 	}
 
 }
