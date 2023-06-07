@@ -75,27 +75,42 @@ public class Chunk : MonoBehaviour
 				triangles[ti + 10] = i + 3;
 				triangles[ti + 11] = i + 4;
 
+<<<<<<< Updated upstream
+				int r = Random.Range(0,2);
+				if (r == 0)
+				{
+					float oneX = 18f, twoX = 1f, threeX = 18f, fourX = 53f, fiveX = 70.5f, sixX = 53f;
+					float oneY = 2f, twoY = 32f, threeY = 62f, fourY = 62f, fiveY = 32f, sixY = 2f;
+					//float sizeX = 72, sizeY = 63;
+					float sizeX = 288, sizeY = 256;
+					//float modifierX = -0.5f, modifierY = 0.5f;
+					float modifierX = -0.5f, modifierY = 0.5f;
 
-				/*uv[i] = new Vector2(.072168f, 0);
-				uv[i + 1] = new Vector2(0, 0.125f);
-				uv[i + 2] = new Vector2(.072168f, .25f);
-				uv[i + 3] = new Vector2(.19921875f, .25f);
-				uv[i + 4] = new Vector2(.26125f, 0.125f);
-				uv[i + 5] = new Vector2(.19921875f, 0);*/
+					uv[i] = new Vector2((oneX - modifierX) / sizeX, (oneY - modifierY) / sizeY);
+					uv[i + 1] = new Vector2((twoX - modifierX) / sizeX, (twoY - modifierY) / sizeY);
+					uv[i + 2] = new Vector2((threeX - modifierX) / sizeX, (threeY - modifierY) / sizeY);
+					uv[i + 3] = new Vector2((fourX - modifierX) / sizeX, (fourY - modifierY) / sizeY);
+					uv[i + 4] = new Vector2((fiveX - modifierX) / sizeX, (fiveY - modifierY) / sizeY);
+					uv[i + 5] = new Vector2((sixX - modifierX) / sizeX, (sixY - modifierY) / sizeY);
+				}
+				else
+				{
+					float oneX = 18f, twoX = 1f, threeX = 18f, fourX = 53f, fiveX = 70.5f, sixX = 53f;
+					float oneY = 2f, twoY = 32f, threeY = 62f, fourY = 62f, fiveY = 32f, sixY = 2f;
+					//float sizeX = 72, sizeY = 63;
+					float sizeX = 288, sizeY = 256;
+					//float modifierX = -0.5f, modifierY = 0.5f;
+					float modifierX = -0.5f, modifierY = 0.5f;
+					int textureIndexX = 1, textureIndexY = 1;
+					modifierX -= (72 * 2);
 
-				float oneX = 18f, twoX = 1f, threeX = 18f, fourX = 53f, fiveX = 70.5f, sixX = 53f;
-				float oneY = 2f, twoY = 32f, threeY = 62f, fourY = 62f, fiveY = 32f, sixY = 2f;
-				//float sizeX = 72, sizeY = 63;
-				float sizeX = 288, sizeY = 256;
-				//float modifierX = -0.5f, modifierY = 0.5f;
-				float modifierX = -0.5f, modifierY = 0.5f;
-
-				uv[i] = new Vector2((oneX - modifierX)/ sizeX, (oneY - modifierY) / sizeY);
-				uv[i + 1] = new Vector2((twoX - modifierX) / sizeX, (twoY - modifierY) / sizeY);
-				uv[i + 2] = new Vector2((threeX - modifierX) / sizeX, (threeY - modifierY) / sizeY);
-				uv[i + 3] = new Vector2((fourX - modifierX) / sizeX, (fourY - modifierY) / sizeY);
-				uv[i + 4] = new Vector2((fiveX - modifierX) / sizeX, (fiveY - modifierY) / sizeY);
-				uv[i + 5] = new Vector2((sixX - modifierX) / sizeX, (sixY - modifierY) / sizeY);
+					uv[i] = new Vector2(((oneX - modifierX) / sizeX) * textureIndexX, ((oneY - modifierY) / sizeY) * textureIndexY);
+					uv[i + 1] = new Vector2(((twoX - modifierX) / sizeX) * textureIndexX, ((twoY - modifierY) / sizeY) * textureIndexY);
+					uv[i + 2] = new Vector2(((threeX - modifierX) / sizeX) * textureIndexX, ((threeY - modifierY) / sizeY) * textureIndexY);
+					uv[i + 3] = new Vector2(((fourX - modifierX) / sizeX) * textureIndexX, ((fourY - modifierY) / sizeY) * textureIndexY);
+					uv[i + 4] = new Vector2(((fiveX - modifierX) / sizeX) * textureIndexX, ((fiveY - modifierY) / sizeY) * textureIndexY);
+					uv[i + 5] = new Vector2(((sixX - modifierX) / sizeX) * textureIndexX, ((sixY - modifierY) / sizeY) * textureIndexY);
+				}
 
 				if (colNum % 2 != 0) y -= (0.5f * height);
 
