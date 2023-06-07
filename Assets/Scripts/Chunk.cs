@@ -75,7 +75,6 @@ public class Chunk : MonoBehaviour
 				triangles[ti + 10] = i + 3;
 				triangles[ti + 11] = i + 4;
 
-<<<<<<< Updated upstream
 				int r = Random.Range(0,2);
 				if (r == 0)
 				{
