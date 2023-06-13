@@ -1019,17 +1019,10 @@ RectTransform:
   m_Father: {fileID: 1865462211}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-<<<<<<< Updated upstream
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0.24372481, y: 0.6198451}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-=======
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 2200.6, y: -125}
   m_SizeDelta: {x: 263.2681, y: 328.5}
->>>>>>> Stashed changes
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &284470955
 MonoBehaviour:
@@ -2727,17 +2720,10 @@ RectTransform:
   m_Father: {fileID: 1865462211}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-<<<<<<< Updated upstream
-  m_AnchorMin: {x: 0, y: 0.76162}
-  m_AnchorMax: {x: 0.19563307, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-=======
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 2142, y: 623.15}
   m_SizeDelta: {x: 200, y: 157.0985}
->>>>>>> Stashed changes
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1006308464
 MonoBehaviour:
@@ -4844,17 +4830,10 @@ RectTransform:
   m_Father: {fileID: 1865462211}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-<<<<<<< Updated upstream
-  m_AnchorMin: {x: 0.21927522, y: 0.83900005}
-  m_AnchorMax: {x: 0.42900002, y: 0.94784504}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-=======
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 2169, y: 350.89}
   m_SizeDelta: {x: 200, y: 157.1}
->>>>>>> Stashed changes
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1719068959
 GameObject:
