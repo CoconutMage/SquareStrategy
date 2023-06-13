@@ -75,15 +75,44 @@ public class Chunk : MonoBehaviour
 				triangles[ti + 10] = i + 3;
 				triangles[ti + 11] = i + 4;
 
-				int r = Random.Range(0,2);
-				if (r == 0)
-				{
-					float oneX = 18f, twoX = 1f, threeX = 18f, fourX = 53f, fiveX = 70.5f, sixX = 53f;
-					float oneY = 2f, twoY = 32f, threeY = 62f, fourY = 62f, fiveY = 32f, sixY = 2f;
-					//float sizeX = 72, sizeY = 63;
-					float sizeX = 288, sizeY = 256;
-					//float modifierX = -0.5f, modifierY = 0.5f;
-					float modifierX = -0.5f, modifierY = 0.5f;
+				/*float oneX = 18f, twoX = 1f, threeX = 18f, fourX = 53f, fiveX = 70.5f, sixX = 53f;
+				float oneY = 2f, twoY = 32f, threeY = 62f, fourY = 62f, fiveY = 32f, sixY = 2f;
+				//float sizeX = 72, sizeY = 63;
+				float sizeX = 288, sizeY = 256;
+				//float modifierX = -0.5f, modifierY = 0.5f;
+				float modifierX = -0.5f, modifierY = 0.5f;
+
+				uv[i] = new Vector2((oneX - modifierX) / sizeX, (oneY - modifierY) / sizeY);
+				uv[i + 1] = new Vector2((twoX - modifierX) / sizeX, (twoY - modifierY) / sizeY);
+				uv[i + 2] = new Vector2((threeX - modifierX) / sizeX, (threeY - modifierY) / sizeY);
+				uv[i + 3] = new Vector2((fourX - modifierX) / sizeX, (fourY - modifierY) / sizeY);
+				uv[i + 4] = new Vector2((fiveX - modifierX) / sizeX, (fiveY - modifierY) / sizeY);
+				uv[i + 5] = new Vector2((sixX - modifierX) / sizeX, (sixY - modifierY) / sizeY);*/
+
+				int r = Random.Range(0,101);
+				int tileType = 0;
+
+				//Sacred numbers given by the Hexagods, do not touch
+				float oneX = 18f, twoX = 1f, threeX = 18f, fourX = 53f, fiveX = 70.5f, sixX = 53f;
+				float oneY = 2f, twoY = 32f, threeY = 62f, fourY = 62f, fiveY = 32f, sixY = 2f;
+				float sizeX = 288, sizeY = 256;
+				float modifierX = -0.5f, modifierY = 0.5f;
+				int textureIndexX, textureIndexY;
+				float offsetX = Random.Range(0, 9999);
+				//-----------------------------------------------------------------------------
+
+				//Debug.Log("Perlin: " + Mathf.PerlinNoise(x / (float)xSize, y / (float)ySize));
+				Debug.Log("Index: " + chunkIndex + " : " + x + " : " + (xSize * (chunkIndex % map.xSize)) * (offsetSide + offsetEdge) + " : " + (float)(xSize * map.xSize * (offsetSide + offsetEdge)));
+				float perlinVal = Mathf.PerlinNoise((x + (xSize * (chunkIndex % map.xSize) * (offsetSide + offsetEdge)))  / (float)(xSize * map.xSize * (offsetSide + offsetEdge)), (y +(ySize * (chunkIndex / map.xSize) * height)) / (float)(ySize * map.ySize * height));
+
+				if (perlinVal <= 0.4f)
+                {
+					tileType = 0;
+
+					textureIndexX = 0;
+					textureIndexY = 1;
+					modifierX -= (72 * textureIndexX);
+					modifierY -= (64 * textureIndexY);
 
 					uv[i] = new Vector2((oneX - modifierX) / sizeX, (oneY - modifierY) / sizeY);
 					uv[i + 1] = new Vector2((twoX - modifierX) / sizeX, (twoY - modifierY) / sizeY);
@@ -92,24 +121,135 @@ public class Chunk : MonoBehaviour
 					uv[i + 4] = new Vector2((fiveX - modifierX) / sizeX, (fiveY - modifierY) / sizeY);
 					uv[i + 5] = new Vector2((sixX - modifierX) / sizeX, (sixY - modifierY) / sizeY);
 				}
+				else if (perlinVal > 0.4f && perlinVal <= 0.55f)
+				{
+					if (r <= 90)
+					{
+						tileType = 0;
+
+						textureIndexX = 1;
+						textureIndexY = 0;
+						modifierX -= (72 * textureIndexX);
+						modifierY -= (64 * textureIndexY);
+
+						uv[i] = new Vector2((oneX - modifierX) / sizeX, (oneY - modifierY) / sizeY);
+						uv[i + 1] = new Vector2((twoX - modifierX) / sizeX, (twoY - modifierY) / sizeY);
+						uv[i + 2] = new Vector2((threeX - modifierX) / sizeX, (threeY - modifierY) / sizeY);
+						uv[i + 3] = new Vector2((fourX - modifierX) / sizeX, (fourY - modifierY) / sizeY);
+						uv[i + 4] = new Vector2((fiveX - modifierX) / sizeX, (fiveY - modifierY) / sizeY);
+						uv[i + 5] = new Vector2((sixX - modifierX) / sizeX, (sixY - modifierY) / sizeY);
+					}
+					else
+                    {
+						tileType = 1;
+
+						textureIndexX = 2;
+						textureIndexY = 0;
+						modifierX -= (72 * textureIndexX);
+						modifierY -= (64 * textureIndexY);
+
+						uv[i] = new Vector2((oneX - modifierX) / sizeX, (oneY - modifierY) / sizeY);
+						uv[i + 1] = new Vector2((twoX - modifierX) / sizeX, (twoY - modifierY) / sizeY);
+						uv[i + 2] = new Vector2((threeX - modifierX) / sizeX, (threeY - modifierY) / sizeY);
+						uv[i + 3] = new Vector2((fourX - modifierX) / sizeX, (fourY - modifierY) / sizeY);
+						uv[i + 4] = new Vector2((fiveX - modifierX) / sizeX, (fiveY - modifierY) / sizeY);
+						uv[i + 5] = new Vector2((sixX - modifierX) / sizeX, (sixY - modifierY) / sizeY);
+					}
+				}
+				else if (perlinVal > 0.55f && perlinVal <= 0.7f)
+				{
+					tileType = 0;
+
+					textureIndexX = 3;
+					textureIndexY = 0;
+					modifierX -= (72 * textureIndexX);
+					modifierY -= (64 * textureIndexY);
+
+					uv[i] = new Vector2((oneX - modifierX) / sizeX, (oneY - modifierY) / sizeY);
+					uv[i + 1] = new Vector2((twoX - modifierX) / sizeX, (twoY - modifierY) / sizeY);
+					uv[i + 2] = new Vector2((threeX - modifierX) / sizeX, (threeY - modifierY) / sizeY);
+					uv[i + 3] = new Vector2((fourX - modifierX) / sizeX, (fourY - modifierY) / sizeY);
+					uv[i + 4] = new Vector2((fiveX - modifierX) / sizeX, (fiveY - modifierY) / sizeY);
+					uv[i + 5] = new Vector2((sixX - modifierX) / sizeX, (sixY - modifierY) / sizeY);
+				}
+				else if (perlinVal > 0.7f)
+				{
+					tileType = 0;
+
+					textureIndexX = 0;
+					textureIndexY = 0;
+					modifierX -= (72 * textureIndexX);
+					modifierY -= (64 * textureIndexY);
+
+					uv[i] = new Vector2((oneX - modifierX) / sizeX, (oneY - modifierY) / sizeY);
+					uv[i + 1] = new Vector2((twoX - modifierX) / sizeX, (twoY - modifierY) / sizeY);
+					uv[i + 2] = new Vector2((threeX - modifierX) / sizeX, (threeY - modifierY) / sizeY);
+					uv[i + 3] = new Vector2((fourX - modifierX) / sizeX, (fourY - modifierY) / sizeY);
+					uv[i + 4] = new Vector2((fiveX - modifierX) / sizeX, (fiveY - modifierY) / sizeY);
+					uv[i + 5] = new Vector2((sixX - modifierX) / sizeX, (sixY - modifierY) / sizeY);
+				}
+				//if (r <= 98)
+				/*if (r <= 98)
+				{
+					tileType = 0;
+					if (r <= 20)
+                    {
+						textureIndexX = 3;
+						textureIndexY = 0;
+						modifierX -= (72 * textureIndexX);
+						modifierY -= (64 * textureIndexY);
+
+						uv[i] = new Vector2((oneX - modifierX) / sizeX, (oneY - modifierY) / sizeY);
+						uv[i + 1] = new Vector2((twoX - modifierX) / sizeX, (twoY - modifierY) / sizeY);
+						uv[i + 2] = new Vector2((threeX - modifierX) / sizeX, (threeY - modifierY) / sizeY);
+						uv[i + 3] = new Vector2((fourX - modifierX) / sizeX, (fourY - modifierY) / sizeY);
+						uv[i + 4] = new Vector2((fiveX - modifierX) / sizeX, (fiveY - modifierY) / sizeY);
+						uv[i + 5] = new Vector2((sixX - modifierX) / sizeX, (sixY - modifierY) / sizeY);
+					}
+					else if (r <= 30)
+					{
+						textureIndexX = 0;
+						textureIndexY = 0;
+						modifierX -= (72 * textureIndexX);
+						modifierY -= (64 * textureIndexY);
+
+						uv[i] = new Vector2((oneX - modifierX) / sizeX, (oneY - modifierY) / sizeY);
+						uv[i + 1] = new Vector2((twoX - modifierX) / sizeX, (twoY - modifierY) / sizeY);
+						uv[i + 2] = new Vector2((threeX - modifierX) / sizeX, (threeY - modifierY) / sizeY);
+						uv[i + 3] = new Vector2((fourX - modifierX) / sizeX, (fourY - modifierY) / sizeY);
+						uv[i + 4] = new Vector2((fiveX - modifierX) / sizeX, (fiveY - modifierY) / sizeY);
+						uv[i + 5] = new Vector2((sixX - modifierX) / sizeX, (sixY - modifierY) / sizeY);
+					}
+					else
+					{
+						textureIndexX = 1;
+						textureIndexY = 0;
+						modifierX -= (72 * textureIndexX);
+						modifierY -= (64 * textureIndexY);
+
+						uv[i] = new Vector2((oneX - modifierX) / sizeX, (oneY - modifierY) / sizeY);
+						uv[i + 1] = new Vector2((twoX - modifierX) / sizeX, (twoY - modifierY) / sizeY);
+						uv[i + 2] = new Vector2((threeX - modifierX) / sizeX, (threeY - modifierY) / sizeY);
+						uv[i + 3] = new Vector2((fourX - modifierX) / sizeX, (fourY - modifierY) / sizeY);
+						uv[i + 4] = new Vector2((fiveX - modifierX) / sizeX, (fiveY - modifierY) / sizeY);
+						uv[i + 5] = new Vector2((sixX - modifierX) / sizeX, (sixY - modifierY) / sizeY);
+					}
+				}
 				else
 				{
-					float oneX = 18f, twoX = 1f, threeX = 18f, fourX = 53f, fiveX = 70.5f, sixX = 53f;
-					float oneY = 2f, twoY = 32f, threeY = 62f, fourY = 62f, fiveY = 32f, sixY = 2f;
-					//float sizeX = 72, sizeY = 63;
-					float sizeX = 288, sizeY = 256;
-					//float modifierX = -0.5f, modifierY = 0.5f;
-					float modifierX = -0.5f, modifierY = 0.5f;
-					int textureIndexX = 1, textureIndexY = 1;
-					modifierX -= (72 * 2);
+					tileType = 1;
+					textureIndexX = 2;
+					textureIndexY = 0;
+					modifierX -= (72 * textureIndexX);
+					modifierY -= (64 * textureIndexY);
 
-					uv[i] = new Vector2(((oneX - modifierX) / sizeX) * textureIndexX, ((oneY - modifierY) / sizeY) * textureIndexY);
-					uv[i + 1] = new Vector2(((twoX - modifierX) / sizeX) * textureIndexX, ((twoY - modifierY) / sizeY) * textureIndexY);
-					uv[i + 2] = new Vector2(((threeX - modifierX) / sizeX) * textureIndexX, ((threeY - modifierY) / sizeY) * textureIndexY);
-					uv[i + 3] = new Vector2(((fourX - modifierX) / sizeX) * textureIndexX, ((fourY - modifierY) / sizeY) * textureIndexY);
-					uv[i + 4] = new Vector2(((fiveX - modifierX) / sizeX) * textureIndexX, ((fiveY - modifierY) / sizeY) * textureIndexY);
-					uv[i + 5] = new Vector2(((sixX - modifierX) / sizeX) * textureIndexX, ((sixY - modifierY) / sizeY) * textureIndexY);
-				}
+					uv[i] = new Vector2((oneX - modifierX) / sizeX, (oneY - modifierY) / sizeY);
+					uv[i + 1] = new Vector2((twoX - modifierX) / sizeX, (twoY - modifierY) / sizeY);
+					uv[i + 2] = new Vector2((threeX - modifierX) / sizeX, (threeY - modifierY) / sizeY);
+					uv[i + 3] = new Vector2((fourX - modifierX) / sizeX, (fourY - modifierY) / sizeY);
+					uv[i + 4] = new Vector2((fiveX - modifierX) / sizeX, (fiveY - modifierY) / sizeY);
+					uv[i + 5] = new Vector2((sixX - modifierX) / sizeX, (sixY - modifierY) / sizeY);
+				}*/
 
 				if (colNum % 2 != 0) y -= (0.5f * height);
 
@@ -122,7 +262,7 @@ public class Chunk : MonoBehaviour
 					uv[0 + zz] = data.TileMap["Stone"][zz];
 				}*/
 
-				data.PopulateChunkTileData(r, chunkIndex, index, new Vector2(0, 0), "Stone");
+				data.PopulateChunkTileData(tileType, chunkIndex, index, new Vector2(0, 0), "Stone");
 				colNum++;
 			}
 			//y++;
