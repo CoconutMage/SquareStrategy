@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
@@ -9,6 +10,8 @@ public class Chunk : MonoBehaviour
 	public int xSize, ySize;
 	public int chunkIndex;
 	public Vector2 chunkPosition;
+
+	public enum HexDirection { NE, S, SE, SW, W, NW }
 
 	private void Awake()
 	{
@@ -22,7 +25,8 @@ public class Chunk : MonoBehaviour
 		Generate();
 	}
 
-	private Vector3[] vertices;
+	//private Vector3[] vertices;
+	private List<Vector3> vertices;
 	private Mesh mesh;
 
 	private void Generate()
@@ -34,16 +38,24 @@ public class Chunk : MonoBehaviour
 		mesh.name = "Chunk";
 		mesh.Clear();
 
-		vertices = new Vector3[((xSize + 1) * (ySize + 1)) * 6];
-		Vector2[] uv = new Vector2[vertices.Length];
-		Vector2[] uv2 = new Vector2[vertices.Length];
-		int[] triangles = new int[(xSize * ySize * 6) * 8];
+		//vertices = new Vector3[((xSize + 1) * (ySize + 1)) * 6];
+		vertices = new List<Vector3>();
+		//Vector2[] uv = new Vector2[vertices.Length];
+		//Vector2[] uv2 = new Vector2[vertices.Length];
+		List<int> triangles = new List<int>();
+		List<Color> colors = new List<Color>();
+
 		float height = 1;
 		float y = 0;
 		float x;
 		float colNum = 0;
 		float offsetSide = (height / Mathf.Tan(60 * Mathf.Deg2Rad));
 		float offsetEdge = (height * 0.5f) * Mathf.Tan(30 * Mathf.Deg2Rad);
+
+		Color grassColor = Color.green;
+		Color hillColor = new Color(0.3f, 0.3f, 0.3f);
+		Color mountainColor = Color.gray;
+		Color waterColor = Color.blue;
 
 		for (int i = 0, ti = 0, index = 0; y < ySize; y++)
 		{
@@ -52,54 +64,32 @@ public class Chunk : MonoBehaviour
 			{
 				if (colNum % 2 != 0) y += (0.5f * height);
 
-				vertices[i] = new Vector3(x, y);
-				vertices[i + 1] = new Vector3(x - offsetEdge, y + (0.5f * height));
-				vertices[i + 2] = new Vector3(x, y + height);
+				vertices.Add(new Vector3(x, y));
+				vertices.Add(new Vector3(x - offsetEdge, y + (0.5f * height)));
+				vertices.Add(new Vector3(x, y + height));
 
-				vertices[i + 3] = new Vector3(x + offsetSide, y + height);
-				vertices[i + 4] = new Vector3(x + offsetEdge + offsetSide, y + (0.5f * height));
-				vertices[i + 5] = new Vector3(x + offsetSide, y);
+				vertices.Add(new Vector3(x + offsetSide, y + height));
+				vertices.Add(new Vector3(x + offsetEdge + offsetSide, y + (0.5f * height)));
+				vertices.Add(new Vector3(x + offsetSide, y));
 
-				triangles[ti] = i;
-				triangles[ti + 1] = i + 1;
-				triangles[ti + 2] = i + 2;
+				triangles.Add(i);
+				triangles.Add(i + 1);
+				triangles.Add(i + 2);
 
-				triangles[ti + 3] = i;
-				triangles[ti + 4] = i + 2;
-				triangles[ti + 5] = i + 5;
+				triangles.Add(i);
+				triangles.Add(i + 2);
+				triangles.Add(i + 5);
 
-				triangles[ti + 6] = i + 2;
-				triangles[ti + 7] = i + 4;
-				triangles[ti + 8] = i + 5;
+				triangles.Add(i + 2);
+				triangles.Add(i + 4);
+				triangles.Add(i + 5);
 
-				triangles[ti + 9] = i + 2;
-				triangles[ti + 10] = i + 3;
-				triangles[ti + 11] = i + 4;
-
-				/*float oneX = 18f, twoX = 1f, threeX = 18f, fourX = 53f, fiveX = 70.5f, sixX = 53f;
-				float oneY = 2f, twoY = 32f, threeY = 62f, fourY = 62f, fiveY = 32f, sixY = 2f;
-				//float sizeX = 72, sizeY = 63;
-				float sizeX = 288, sizeY = 256;
-				//float modifierX = -0.5f, modifierY = 0.5f;
-				float modifierX = -0.5f, modifierY = 0.5f;
-
-				uv[i] = new Vector2((oneX - modifierX) / sizeX, (oneY - modifierY) / sizeY);
-				uv[i + 1] = new Vector2((twoX - modifierX) / sizeX, (twoY - modifierY) / sizeY);
-				uv[i + 2] = new Vector2((threeX - modifierX) / sizeX, (threeY - modifierY) / sizeY);
-				uv[i + 3] = new Vector2((fourX - modifierX) / sizeX, (fourY - modifierY) / sizeY);
-				uv[i + 4] = new Vector2((fiveX - modifierX) / sizeX, (fiveY - modifierY) / sizeY);
-				uv[i + 5] = new Vector2((sixX - modifierX) / sizeX, (sixY - modifierY) / sizeY);*/
+				triangles.Add(i + 2);
+				triangles.Add(i + 3);
+				triangles.Add(i + 4);
 
 				int r = Random.Range(0,101);
 				int tileType = 0;
-
-				//Sacred numbers given by the Hexagods, do not touch
-				float oneX = 18f, twoX = 1f, threeX = 18f, fourX = 53f, fiveX = 70.5f, sixX = 53f;
-				float oneY = 2f, twoY = 32f, threeY = 62f, fourY = 62f, fiveY = 32f, sixY = 2f;
-				float sizeX = 288, sizeY = 256;
-				float modifierX = -0.5f, modifierY = 0.5f;
-				int textureIndexX = 0, textureIndexY = 0;
-				//-----------------------------------------------------------------------------
 
 				//Debug.Log("Perlin: " + Mathf.PerlinNoise(x / (float)xSize, y / (float)ySize));
 				//Debug.Log("Index: " + chunkIndex + " : " + x + " : " + (xSize * (chunkIndex % map.xSize)) * (offsetSide + offsetEdge) + " : " + (float)(xSize * map.xSize * (offsetSide + offsetEdge)));
@@ -132,151 +122,50 @@ public class Chunk : MonoBehaviour
 				perlinVal += offsetZ;
 				//Debug.Log("Index: " + chunkIndex + " : " + x + " : " + perlinVal);
 
-				if (perlinVal <= 3f)
-                {
-					tileType = 0;
-
-					textureIndexX = 0;
-					textureIndexY = 1;
-					modifierX -= (72 * textureIndexX);
-					modifierY -= (64 * textureIndexY);
-
-					uv[i] = new Vector2((oneX - modifierX) / sizeX, (oneY - modifierY) / sizeY);
-					uv[i + 1] = new Vector2((twoX - modifierX) / sizeX, (twoY - modifierY) / sizeY);
-					uv[i + 2] = new Vector2((threeX - modifierX) / sizeX, (threeY - modifierY) / sizeY);
-					uv[i + 3] = new Vector2((fourX - modifierX) / sizeX, (fourY - modifierY) / sizeY);
-					uv[i + 4] = new Vector2((fiveX - modifierX) / sizeX, (fiveY - modifierY) / sizeY);
-					uv[i + 5] = new Vector2((sixX - modifierX) / sizeX, (sixY - modifierY) / sizeY);
-				}
-				else if (perlinVal > 3f && perlinVal <= 6f)
-				{
-					if (r <= 90)
-					{
-						tileType = 0;
-
-						textureIndexX = 1;
-						textureIndexY = 0;
-						modifierX -= (72 * textureIndexX);
-						modifierY -= (64 * textureIndexY);
-
-						uv[i] = new Vector2((oneX - modifierX) / sizeX, (oneY - modifierY) / sizeY);
-						uv[i + 1] = new Vector2((twoX - modifierX) / sizeX, (twoY - modifierY) / sizeY);
-						uv[i + 2] = new Vector2((threeX - modifierX) / sizeX, (threeY - modifierY) / sizeY);
-						uv[i + 3] = new Vector2((fourX - modifierX) / sizeX, (fourY - modifierY) / sizeY);
-						uv[i + 4] = new Vector2((fiveX - modifierX) / sizeX, (fiveY - modifierY) / sizeY);
-						uv[i + 5] = new Vector2((sixX - modifierX) / sizeX, (sixY - modifierY) / sizeY);
-					}
-					else
-                    {
-						tileType = 1;
-
-						textureIndexX = 2;
-						textureIndexY = 0;
-						modifierX -= (72 * textureIndexX);
-						modifierY -= (64 * textureIndexY);
-
-						uv[i] = new Vector2((oneX - modifierX) / sizeX, (oneY - modifierY) / sizeY);
-						uv[i + 1] = new Vector2((twoX - modifierX) / sizeX, (twoY - modifierY) / sizeY);
-						uv[i + 2] = new Vector2((threeX - modifierX) / sizeX, (threeY - modifierY) / sizeY);
-						uv[i + 3] = new Vector2((fourX - modifierX) / sizeX, (fourY - modifierY) / sizeY);
-						uv[i + 4] = new Vector2((fiveX - modifierX) / sizeX, (fiveY - modifierY) / sizeY);
-						uv[i + 5] = new Vector2((sixX - modifierX) / sizeX, (sixY - modifierY) / sizeY);
-					}
-				}
-				else if (perlinVal > 6f && perlinVal <= 8f)
+				if (perlinVal <= 3.5f)
 				{
 					tileType = 0;
+					colors.Add(waterColor);
+					colors.Add(waterColor);
+					colors.Add(waterColor);
 
-					textureIndexX = 3;
-					textureIndexY = 0;
-					modifierX -= (72 * textureIndexX);
-					modifierY -= (64 * textureIndexY);
-
-					uv[i] = new Vector2((oneX - modifierX) / sizeX, (oneY - modifierY) / sizeY);
-					uv[i + 1] = new Vector2((twoX - modifierX) / sizeX, (twoY - modifierY) / sizeY);
-					uv[i + 2] = new Vector2((threeX - modifierX) / sizeX, (threeY - modifierY) / sizeY);
-					uv[i + 3] = new Vector2((fourX - modifierX) / sizeX, (fourY - modifierY) / sizeY);
-					uv[i + 4] = new Vector2((fiveX - modifierX) / sizeX, (fiveY - modifierY) / sizeY);
-					uv[i + 5] = new Vector2((sixX - modifierX) / sizeX, (sixY - modifierY) / sizeY);
+					colors.Add(waterColor);
+					colors.Add(waterColor);
+					colors.Add(waterColor);
 				}
-				else if (perlinVal > 8f)
+				else if (perlinVal > 3.5f && perlinVal <= 7f)
 				{
-					tileType = 0;
+					tileType = 1;
+					colors.Add(grassColor);
+					colors.Add(grassColor);
+					colors.Add(grassColor);
 
-					textureIndexX = 0;
-					textureIndexY = 0;
-					modifierX -= (72 * textureIndexX);
-					modifierY -= (64 * textureIndexY);
-
-					uv[i] = new Vector2((oneX - modifierX) / sizeX, (oneY - modifierY) / sizeY);
-					uv[i + 1] = new Vector2((twoX - modifierX) / sizeX, (twoY - modifierY) / sizeY);
-					uv[i + 2] = new Vector2((threeX - modifierX) / sizeX, (threeY - modifierY) / sizeY);
-					uv[i + 3] = new Vector2((fourX - modifierX) / sizeX, (fourY - modifierY) / sizeY);
-					uv[i + 4] = new Vector2((fiveX - modifierX) / sizeX, (fiveY - modifierY) / sizeY);
-					uv[i + 5] = new Vector2((sixX - modifierX) / sizeX, (sixY - modifierY) / sizeY);
+					colors.Add(grassColor);
+					colors.Add(grassColor);
+					colors.Add(grassColor);
 				}
-				//if (r <= 98)
-				/*if (r <= 98)
+				else if (perlinVal > 7f && perlinVal <= 8.75f)
 				{
-					tileType = 0;
-					if (r <= 20)
-                    {
-						textureIndexX = 3;
-						textureIndexY = 0;
-						modifierX -= (72 * textureIndexX);
-						modifierY -= (64 * textureIndexY);
+					tileType = 2;
+					colors.Add(hillColor);
+					colors.Add(hillColor);
+					colors.Add(hillColor);
 
-						uv[i] = new Vector2((oneX - modifierX) / sizeX, (oneY - modifierY) / sizeY);
-						uv[i + 1] = new Vector2((twoX - modifierX) / sizeX, (twoY - modifierY) / sizeY);
-						uv[i + 2] = new Vector2((threeX - modifierX) / sizeX, (threeY - modifierY) / sizeY);
-						uv[i + 3] = new Vector2((fourX - modifierX) / sizeX, (fourY - modifierY) / sizeY);
-						uv[i + 4] = new Vector2((fiveX - modifierX) / sizeX, (fiveY - modifierY) / sizeY);
-						uv[i + 5] = new Vector2((sixX - modifierX) / sizeX, (sixY - modifierY) / sizeY);
-					}
-					else if (r <= 30)
-					{
-						textureIndexX = 0;
-						textureIndexY = 0;
-						modifierX -= (72 * textureIndexX);
-						modifierY -= (64 * textureIndexY);
-
-						uv[i] = new Vector2((oneX - modifierX) / sizeX, (oneY - modifierY) / sizeY);
-						uv[i + 1] = new Vector2((twoX - modifierX) / sizeX, (twoY - modifierY) / sizeY);
-						uv[i + 2] = new Vector2((threeX - modifierX) / sizeX, (threeY - modifierY) / sizeY);
-						uv[i + 3] = new Vector2((fourX - modifierX) / sizeX, (fourY - modifierY) / sizeY);
-						uv[i + 4] = new Vector2((fiveX - modifierX) / sizeX, (fiveY - modifierY) / sizeY);
-						uv[i + 5] = new Vector2((sixX - modifierX) / sizeX, (sixY - modifierY) / sizeY);
-					}
-					else
-					{
-						textureIndexX = 1;
-						textureIndexY = 0;
-						modifierX -= (72 * textureIndexX);
-						modifierY -= (64 * textureIndexY);
-
-						uv[i] = new Vector2((oneX - modifierX) / sizeX, (oneY - modifierY) / sizeY);
-						uv[i + 1] = new Vector2((twoX - modifierX) / sizeX, (twoY - modifierY) / sizeY);
-						uv[i + 2] = new Vector2((threeX - modifierX) / sizeX, (threeY - modifierY) / sizeY);
-						uv[i + 3] = new Vector2((fourX - modifierX) / sizeX, (fourY - modifierY) / sizeY);
-						uv[i + 4] = new Vector2((fiveX - modifierX) / sizeX, (fiveY - modifierY) / sizeY);
-						uv[i + 5] = new Vector2((sixX - modifierX) / sizeX, (sixY - modifierY) / sizeY);
-					}
+					colors.Add(hillColor);
+					colors.Add(hillColor);
+					colors.Add(hillColor);
 				}
 				else
 				{
-					tileType = 1;
-					textureIndexX = 2;
-					textureIndexY = 0;
-					modifierX -= (72 * textureIndexX);
-					modifierY -= (64 * textureIndexY);
+					tileType = 3;
+					colors.Add(mountainColor);
+					colors.Add(mountainColor);
+					colors.Add(mountainColor);
 
-					uv[i] = new Vector2((oneX - modifierX) / sizeX, (oneY - modifierY) / sizeY);
-					uv[i + 1] = new Vector2((twoX - modifierX) / sizeX, (twoY - modifierY) / sizeY);
-					uv[i + 2] = new Vector2((threeX - modifierX) / sizeX, (threeY - modifierY) / sizeY);
-					uv[i + 3] = new Vector2((fourX - modifierX) / sizeX, (fourY - modifierY) / sizeY);
-					uv[i + 4] = new Vector2((fiveX - modifierX) / sizeX, (fiveY - modifierY) / sizeY);
-					uv[i + 5] = new Vector2((sixX - modifierX) / sizeX, (sixY - modifierY) / sizeY);
-				}*/
+					colors.Add(mountainColor);
+					colors.Add(mountainColor);
+					colors.Add(mountainColor);
+				}
 
 				if (colNum % 2 != 0) y -= (0.5f * height);
 
@@ -292,28 +181,18 @@ public class Chunk : MonoBehaviour
 				data.PopulateChunkTileData(tileType, chunkIndex, index, new Vector2(0, 0), "Stone");
 				//mapData.PopulateChunkTileData(r, chunkIndex, index, new Vector2(0, 0), "Stone");
 				colNum++;
-
-				textureIndexX = 0;
-				textureIndexY = 0;
-				modifierX -= (72 * textureIndexX);
-				modifierY -= (64 * textureIndexY);
-
-				uv2[i] = new Vector2((oneX - modifierX) / sizeX, (oneY - modifierY) / sizeY);
-				uv2[i + 1] = new Vector2((twoX - modifierX) / sizeX, (twoY - modifierY) / sizeY);
-				uv2[i + 2] = new Vector2((threeX - modifierX) / sizeX, (threeY - modifierY) / sizeY);
-				uv2[i + 3] = new Vector2((fourX - modifierX) / sizeX, (fourY - modifierY) / sizeY);
-				uv2[i + 4] = new Vector2((fiveX - modifierX) / sizeX, (fiveY - modifierY) / sizeY);
-				uv2[i + 5] = new Vector2((sixX - modifierX) / sizeX, (sixY - modifierY) / sizeY);
 			}
 			//y++;
 		}
 
 		mesh.subMeshCount = 2;
-		mesh.vertices = vertices;
-		mesh.SetTriangles(triangles, 0);
+		mesh.vertices = vertices.ToArray();
+		mesh.colors = colors.ToArray();
+		mesh.triangles = triangles.ToArray();
+		//mesh.SetTriangles(triangles, 0);
 		//mesh.SetTriangles(triangles, 1);
 		mesh.RecalculateNormals();
-		mesh.uv = uv;
+		//mesh.uv = uv;
 
 	}
 
