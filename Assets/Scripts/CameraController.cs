@@ -5,7 +5,7 @@ public class CameraController : MonoBehaviour
 {
 	public static CameraController Instance { get; private set; }
 
-	MapData data;
+	Data data;
 
 	[SerializeField]
 	float cameraZoom = 10f;
@@ -30,7 +30,7 @@ public class CameraController : MonoBehaviour
 		}
 		Instance = this;
 
-		data = MapData.Instance;
+		data = Data.Instance;
 		
 		ui = UI.Instance;
 		startingCameraSize = Camera.main.orthographicSize;
@@ -81,13 +81,14 @@ public class CameraController : MonoBehaviour
 			{
 				SetTileUVs(previousTile, "Stone");
 			}
-			ui.DisplayUnits(currentTile.tile.landUnits, currentTile.tile.airUnits);
-			ui.DisplayResources(currentTile.tile.resources);
-			ui.DisplayCity(currentTile.tile.city);
-
 			SetTileUVs(currentTile, "Selected_Tile");
 			previousTile = currentTile;
 
+			ui.PoliticalPanelHandler(currentTile.tile.city.parentCountry);
+
+			//ui.DisplayUnits(currentTile.tile.landUnits, currentTile.tile.airUnits);
+			//ui.DisplayResources(currentTile.tile.resources);
+			//ui.DisplayCity(currentTile.tile.city);
 		}
 	}
 
@@ -161,7 +162,7 @@ public class CameraController : MonoBehaviour
 		tileToSet.mesh.uv = tempMeshUVs;
 
 		tileToSet.tile.tileType = tileType;
-		data.Map[tileToSet.chunkIndex].tiles[tileToSet.tileIndex] = tileToSet.tile;
+		data.map[tileToSet.chunkIndex].tiles[tileToSet.tileIndex] = tileToSet.tile;
 	}
 
 	public struct MeshInteractionResult
@@ -175,10 +176,10 @@ public class CameraController : MonoBehaviour
 		public Vector2 hitUVCoords;
 		public int tileIndex;
 		public int chunkIndex;
-		public MapData.Tile tile;
+		public Data.Tile tile;
 	}
 
-	public static MeshInteractionResult InteractWithMesh(MapData data)
+	public static MeshInteractionResult InteractWithMesh(Data data)
 	{
 		Mesh mesh = null;
 		Vector2[] meshUVs = null;
@@ -188,7 +189,7 @@ public class CameraController : MonoBehaviour
 		Vector2 hitUVCoords = Vector2.zero;
 		int tileIndex = -1;
 		int chunkIndex = -1;
-		MapData.Tile tile = data.nullTile;
+		Data.Tile tile = data.nullTile;
 
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -213,7 +214,7 @@ public class CameraController : MonoBehaviour
 					//Debug.Log("UV Index: " + uvIndex);
 					chunkIndex = hit.transform.gameObject.GetComponent<Chunk>().chunkIndex;
 
-					Dictionary<int, MapData.Tile> tiles = data.Map[chunkIndex].tiles;
+					Dictionary<int, Data.Tile> tiles = data.map[chunkIndex].tiles;
 					tile = tiles[tileIndex];
 
 					//Debug.Log("===========================================================================================");

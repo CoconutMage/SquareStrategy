@@ -1,10 +1,14 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
+using static Data;
 
 public class UI : MonoBehaviour
 {
-	MapData data;
+	Data data;
+	CameraController cam;
 
 	public TMP_Text landUnitsText;
 	public TMP_Text airUnitsText;
@@ -14,6 +18,16 @@ public class UI : MonoBehaviour
 	public TMP_Text cityText;
 	public TMP_Text countryText;
 	public TMP_Text navyText;
+
+	public RectTransform politicalPanel;
+	public RectTransform researchPanel1;
+
+	public TMP_Text politicalPower;
+	public TMP_Text leaderName;
+
+	public Image leaderImage;
+
+	public Country playerCountry = Data.nullCountry;
 
 	public static UI Instance { get; private set; }
 	void Awake()
@@ -25,7 +39,84 @@ public class UI : MonoBehaviour
 		}
 		Instance = this;
 
-		data = MapData.Instance;
+		data = Data.Instance;
+		cam = CameraController.Instance;
+	}
+
+
+	void Start()
+	{
+		playerCountry = data.countries["USA"];
+		UpdateResourceBar();
+
+		leaderImage.sprite = null;
+	}
+
+	public void UpdateResourceBar()
+	{
+		politicalPower.text = playerCountry.leader.politicalPower.ToString();
+	}
+
+	public void PoliticalPanelButton()
+	{
+		if (politicalPanelOut && !displayingCountry.Equals(playerCountry))
+		{
+			UpdatePoliticalPanel(playerCountry);
+		}
+		else
+		{
+			UpdatePoliticalPanel(playerCountry);
+			StartCoroutine(PoliticalPanelTransition());
+		}
+	}
+
+	public void ResearchPanel1Button()
+	{
+		StartCoroutine(ResearchPanel1Transition());
+	}
+
+	public void ClosePoliticalPanel()
+	{
+		if (politicalPanelOut)
+		{
+			StartCoroutine(PoliticalPanelTransition());
+		}
+	}
+
+	public Country displayingCountry;
+
+	void UpdatePoliticalPanel(Country country)
+	{
+		if (!country.Equals(Data.nullCountry) || !country.Equals(playerCountry))
+		{
+			displayingCountry = country;
+			leaderName.text = country.leader.name;
+			countryText.text = country.name;
+			leaderImage.sprite = country.leader.leaderImage;
+		}
+		else
+		{
+			displayingCountry = playerCountry;
+			leaderName.text = playerCountry.leader.name;
+			countryText.text = playerCountry.name;
+			leaderImage.sprite = country.leader.leaderImage;
+		}
+	}
+
+	public void PoliticalPanelHandler(Country country)
+	{
+
+		if (politicalPanelOut)
+		{
+			displayingCountry = country;
+			UpdatePoliticalPanel(country);
+		}
+		else
+		{
+			displayingCountry = country;
+			UpdatePoliticalPanel(country);
+			StartCoroutine(PoliticalPanelTransition());
+		}
 	}
 
 	public void DisplayUnits(Dictionary<string, int> landUnits, Dictionary<string, int> airUnits)
@@ -86,12 +177,12 @@ public class UI : MonoBehaviour
 		
 	}
 
-	public void DisplayCity(CountryData.City city)
+	public void DisplayCity(Data.City city)
 	{
-		if (!city.Equals(CountryData.nullCity))
+		if (!city.Equals(Data.nullCity))
 		{
 			cityText.text = city.name;
-			countryText.text = city.parentCountry.name + "\n" + city.parentCountry.leader.name;
+			countryText.text = city.parentCountry.name ;
 
 			Bazinga();
 		}
@@ -105,7 +196,7 @@ public class UI : MonoBehaviour
 		void Bazinga()
 		{
 			string temp = "";
-			CountryData.Country country = city.parentCountry;
+			Data.Country country = city.parentCountry;
 
 			int i = 0;
 			foreach (var navalUnit in country.Navy)
@@ -124,4 +215,69 @@ public class UI : MonoBehaviour
 		}
 	}
 
+	/* COROUTINES */
+	public bool politicalPanelOut;
+	bool politicalPanelSliding;
+	Vector3 politicalPanelSlideSpeed = new(5, 0, 0);
+	IEnumerator PoliticalPanelTransition()
+	{
+		if (politicalPanelOut && politicalPanelSliding != true)
+		{
+			politicalPanelSliding = true;
+			for (int i = 0; i < 355 / politicalPanelSlideSpeed.x; i++)
+			{
+				politicalPanel.transform.position -= politicalPanelSlideSpeed;
+				yield return null;
+			}
+			politicalPanelOut = false;
+			politicalPanelSliding = false;
+			StopCoroutine(PoliticalPanelTransition());
+		}
+		else if (!politicalPanelOut && politicalPanelSliding != true)
+		{
+			politicalPanelSliding = true;
+			for (int i = 0; i < 355 / politicalPanelSlideSpeed.x; i++)
+			{
+				politicalPanel.transform.position += politicalPanelSlideSpeed;
+				yield return null;
+			}
+			politicalPanelOut = true;
+			politicalPanelSliding = false;
+			StopCoroutine(PoliticalPanelTransition());
+		}
+	}
+
+	public bool researchPanel1Out;
+	bool researchPanel1Sliding;
+	Vector3 researchPanel1SlideSpeed = new(0, 5, 0);
+	int researchPanel1SlideAmount = 595;
+	IEnumerator ResearchPanel1Transition()
+	{
+		if (researchPanel1Out && researchPanel1Sliding != true)
+		{
+			researchPanel1Sliding = true;
+			for (int i = 0; i < researchPanel1SlideAmount / researchPanel1SlideSpeed.y; i++)
+			{
+				researchPanel1.transform.position -= researchPanel1SlideSpeed;
+				yield return null;
+			}
+			researchPanel1Out = false;
+			//cam.canZoom = true;
+			researchPanel1Sliding = false;
+			StopCoroutine(ResearchPanel1Transition());
+		}
+		else if (!researchPanel1Out && researchPanel1Sliding != true)
+		{
+			researchPanel1Sliding = true;
+			for (int i = 0; i < researchPanel1SlideAmount / researchPanel1SlideSpeed.y; i++)
+			{
+				researchPanel1.transform.position += researchPanel1SlideSpeed;
+				yield return null;
+			}
+			researchPanel1Out = true;
+			//cam.canZoom = false;
+			researchPanel1Sliding = false;
+			StopCoroutine(ResearchPanel1Transition());
+		}
+	}
 }

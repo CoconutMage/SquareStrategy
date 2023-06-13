@@ -9,7 +9,7 @@ public class Map : MonoBehaviour
 
 	public GameObject chunkPrefab;
 
-	MapData data;
+	Data data;
 	Chunk chunkScript;
 	public float noiseOffsetX, noiseOffsetY;
 
@@ -22,7 +22,7 @@ public class Map : MonoBehaviour
 		}
 		Instance = this;
 
-		data = MapData.Instance;
+		data = Data.Instance;
 
 		noiseOffsetX = Random.Range(0, 9999);
 		noiseOffsetY = Random.Range(0, 9999);

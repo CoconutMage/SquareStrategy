@@ -3,7 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
 public class Chunk : MonoBehaviour
 {
-	MapData data;
+	Data mapData;
 	Map map;
 
 	public int xSize, ySize;
@@ -12,7 +12,7 @@ public class Chunk : MonoBehaviour
 
 	private void Awake()
 	{
-		data = MapData.Instance;
+		mapData = Data.Instance;
 		map = Map.Instance;
 
 		chunkIndex = map.chunkIndex;
@@ -288,7 +288,11 @@ public class Chunk : MonoBehaviour
 					uv[0 + zz] = data.TileMap["Stone"][zz];
 				}*/
 
+<<<<<<< Updated upstream
 				data.PopulateChunkTileData(tileType, chunkIndex, index, new Vector2(0, 0), "Stone");
+=======
+				mapData.PopulateChunkTileData(r, chunkIndex, index, new Vector2(0, 0), "Stone");
+>>>>>>> Stashed changes
 				colNum++;
 			}
 			//y++;

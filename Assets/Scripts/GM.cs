@@ -11,7 +11,7 @@ public class GM : MonoBehaviour
 	int tickCounter = 0;
 	public int tps = 50;
 
-	MapData data;
+	Data data;
 	CameraController cam;
 	UI ui;
 
@@ -84,14 +84,14 @@ public class GM : MonoBehaviour
 		Instance = this;
 		tickEvent.AddListener(Tick);
 
-		data = MapData.Instance;
+		data = Data.Instance;
 		cam = CameraController.Instance;
 		ui = UI.Instance;
 	}
 
 	void Update()
 	{
-		GlobalResourceManager();
+		//GlobalResourceManager();
 		//PlanetResourceManager();
 	}
 
