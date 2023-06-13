@@ -56,7 +56,7 @@ public class CameraController : MonoBehaviour
 	{
 		if (Input.GetMouseButtonDown(0))
 		{
-			currentTile = InteractWithMesh(data);
+			/*currentTile = InteractWithMesh(data);
 			if (currentTile.tile.tileType == "Stone")
 			{
 				SetTileUVs(currentTile, "Grass");
@@ -64,7 +64,7 @@ public class CameraController : MonoBehaviour
 			else if (currentTile.tile.tileType == "Grass" || currentTile.tile.tileType == "Selected_Tile")
 			{
 				SetTileUVs(currentTile, "Stone");
-			}
+			}*/
 		}
 	}
 
@@ -79,9 +79,10 @@ public class CameraController : MonoBehaviour
 
 			if (previousTile.mesh != null)
 			{
-				SetTileUVs(previousTile, "Stone");
+				SetTileUVs(previousTile, "Empty");
 			}
 			SetTileUVs(currentTile, "Selected_Tile");
+			//SetTriangleHighlight(currentTile, "Selected_Tile");
 			previousTile = currentTile;
 
 			ui.PoliticalPanelHandler(currentTile.tile.city.parentCountry);
@@ -131,19 +132,8 @@ public class CameraController : MonoBehaviour
 	void SetTileUVs(MeshInteractionResult tileToSet, string tileType)
 	{
 		Vector2[] tempMeshUVs = tileToSet.mesh.uv;
-		/*for (int zz = 0; zz < 4; zz++)
-		{
-			tempMeshUVs[tileToSet.uvIndex + zz] = data.TileMap[material][zz];
-		}*/
-		//Debug.Log("UV: " + tileToSet.uvIndex);
-		/*tempMeshUVs[tileToSet.uvIndex] = new Vector2(.3828125f, .01171875f);
-		tempMeshUVs[tileToSet.uvIndex + 1] = new Vector2(.3046875f, .1328125f);
-		tempMeshUVs[tileToSet.uvIndex + 2] = new Vector2(.3828125f, .2578125f);
-		tempMeshUVs[tileToSet.uvIndex + 3] = new Vector2(.50390625f, .2578125f);
-		tempMeshUVs[tileToSet.uvIndex + 4] = new Vector2(.56203125f, .1328125f);
-		tempMeshUVs[tileToSet.uvIndex + 5] = new Vector2(.50390625f, .01171875f);*/
 
-		float oneX = 18f, twoX = 1f, threeX = 18f, fourX = 53f, fiveX = 70.5f, sixX = 53f;
+		/*float oneX = 18f, twoX = 1f, threeX = 18f, fourX = 53f, fiveX = 70.5f, sixX = 53f;
 		float oneY = 2f, twoY = 32f, threeY = 62f, fourY = 62f, fiveY = 32f, sixY = 2f;
 		//float sizeX = 72, sizeY = 63;
 		float sizeX = 288, sizeY = 256;
@@ -159,16 +149,71 @@ public class CameraController : MonoBehaviour
 		tempMeshUVs[tileToSet.uvIndex + 4] = new Vector2(((fiveX - modifierX) / sizeX) * textureIndexX, ((fiveY - modifierY) / sizeY) * textureIndexY);
 		tempMeshUVs[tileToSet.uvIndex + 5] = new Vector2(((sixX - modifierX) / sizeX) * textureIndexX, ((sixY - modifierY) / sizeY) * textureIndexY);
 
-		tileToSet.mesh.uv = tempMeshUVs;
+		tileToSet.mesh.uv = tempMeshUVs;*/
 
-		tileToSet.tile.tileType = tileType;
-		data.map[tileToSet.chunkIndex].tiles[tileToSet.tileIndex] = tileToSet.tile;
+		if (tileType.Equals("Empty"))
+        {
+			int[] triangles = new int[12];
+
+			tileToSet.mesh.SetTriangles(triangles, 1);
+
+			tileToSet.tile.tileType = tileType;
+			data.map[tileToSet.chunkIndex].tiles[tileToSet.tileIndex] = tileToSet.tile;
+		}
+		else
+        {
+			int[] triangles = new int[12];
+			int ti = 0;
+			int i = tileToSet.tileIndex * 6;
+
+			triangles[ti] = i;
+			triangles[ti + 1] = i + 1;
+			triangles[ti + 2] = i + 2;
+
+			triangles[ti + 3] = i;
+			triangles[ti + 4] = i + 2;
+			triangles[ti + 5] = i + 5;
+
+			triangles[ti + 6] = i + 2;
+			triangles[ti + 7] = i + 4;
+			triangles[ti + 8] = i + 5;
+
+			triangles[ti + 9] = i + 2;
+			triangles[ti + 10] = i + 3;
+			triangles[ti + 11] = i + 4;
+
+			tileToSet.mesh.SetTriangles(triangles, 1);
+
+			tileToSet.tile.tileType = tileType;
+			data.map[tileToSet.chunkIndex].tiles[tileToSet.tileIndex] = tileToSet.tile;
+		}
 	}
+	/*private void SetTriangleHighlight(MeshInteractionResult tileToSet, string tileType)
+	{
+		MeshRenderer targetRenderer = tileToSet.meshRenderer;
+		Color highlightColor = Color.yellow;
+		MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
+
+		if (targetRenderer == null)
+			return;
+
+		propertyBlock.SetColor("_HighlightColor", highlightColor);
+
+		targetRenderer.SetPropertyBlock(propertyBlock, index1);
+		targetRenderer.SetPropertyBlock(propertyBlock, index2);
+		targetRenderer.SetPropertyBlock(propertyBlock, index3);
+
+		targetRenderer.SetPropertyBlock(propertyBlock, tileToSet.tileIndex);
+		targetRenderer.SetPropertyBlock(propertyBlock, tileToSet.tileIndex + 1);
+		targetRenderer.SetPropertyBlock(propertyBlock, tileToSet.tileIndex + 2);
+		targetRenderer.SetPropertyBlock(propertyBlock, tileToSet.tileIndex + 3);
+	}*/
 
 	public struct MeshInteractionResult
 	{
 		public RaycastHit hit;
 		public Mesh mesh;
+		public MeshRenderer meshRenderer;
 		public Vector2[] meshUVs;
 		public int[] triangles;
 		public int triangleIndex;
@@ -182,6 +227,7 @@ public class CameraController : MonoBehaviour
 	public static MeshInteractionResult InteractWithMesh(Data data)
 	{
 		Mesh mesh = null;
+		MeshRenderer meshRenderer = null;
 		Vector2[] meshUVs = null;
 		int[] triangles = null;
 		int triangleIndex = -1;
@@ -199,6 +245,7 @@ public class CameraController : MonoBehaviour
 			if (meshCollider != null && meshCollider.sharedMesh != null)
 			{
 				mesh = meshCollider.sharedMesh;
+				meshRenderer = meshCollider.gameObject.GetComponent<MeshRenderer>();
 				meshUVs = mesh.uv;
 				triangles = mesh.triangles;
 				triangleIndex = hit.triangleIndex;
@@ -226,6 +273,7 @@ public class CameraController : MonoBehaviour
 		{
 			hit = hit,
 			mesh = mesh,
+			meshRenderer = meshRenderer,
 			meshUVs = meshUVs,
 			triangles = triangles,
 			triangleIndex = triangleIndex,

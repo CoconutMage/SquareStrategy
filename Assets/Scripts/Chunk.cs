@@ -36,6 +36,7 @@ public class Chunk : MonoBehaviour
 
 		vertices = new Vector3[((xSize + 1) * (ySize + 1)) * 6];
 		Vector2[] uv = new Vector2[vertices.Length];
+		Vector2[] uv2 = new Vector2[vertices.Length];
 		int[] triangles = new int[(xSize * ySize * 6) * 8];
 		float height = 1;
 		float y = 0;
@@ -97,7 +98,7 @@ public class Chunk : MonoBehaviour
 				float oneY = 2f, twoY = 32f, threeY = 62f, fourY = 62f, fiveY = 32f, sixY = 2f;
 				float sizeX = 288, sizeY = 256;
 				float modifierX = -0.5f, modifierY = 0.5f;
-				int textureIndexX, textureIndexY;
+				int textureIndexX = 0, textureIndexY = 0;
 				//-----------------------------------------------------------------------------
 
 				//Debug.Log("Perlin: " + Mathf.PerlinNoise(x / (float)xSize, y / (float)ySize));
@@ -112,7 +113,7 @@ public class Chunk : MonoBehaviour
 				   //How much detail is added for each octave. Basically increases the frequency for each successive octave
 				int lacunarity = 2;
 				   //How bunched together the hills are. Think frequency of a sound wave
-				float frequency = 1.75f;
+				float frequency = 3.75f;
 				   //How high and low the peaks and valleys are
 				float amplitude = 10;
 				   //How much less impactful each successive octave is. Basically reduces the amplitutude of each octave
@@ -129,7 +130,7 @@ public class Chunk : MonoBehaviour
 
 				perlinVal *= amplitude;
 				perlinVal += offsetZ;
-				Debug.Log("Index: " + chunkIndex + " : " + x + " : " + perlinVal);
+				//Debug.Log("Index: " + chunkIndex + " : " + x + " : " + perlinVal);
 
 				if (perlinVal <= 3f)
                 {
@@ -291,12 +292,26 @@ public class Chunk : MonoBehaviour
 				data.PopulateChunkTileData(tileType, chunkIndex, index, new Vector2(0, 0), "Stone");
 				//mapData.PopulateChunkTileData(r, chunkIndex, index, new Vector2(0, 0), "Stone");
 				colNum++;
+
+				textureIndexX = 0;
+				textureIndexY = 0;
+				modifierX -= (72 * textureIndexX);
+				modifierY -= (64 * textureIndexY);
+
+				uv2[i] = new Vector2((oneX - modifierX) / sizeX, (oneY - modifierY) / sizeY);
+				uv2[i + 1] = new Vector2((twoX - modifierX) / sizeX, (twoY - modifierY) / sizeY);
+				uv2[i + 2] = new Vector2((threeX - modifierX) / sizeX, (threeY - modifierY) / sizeY);
+				uv2[i + 3] = new Vector2((fourX - modifierX) / sizeX, (fourY - modifierY) / sizeY);
+				uv2[i + 4] = new Vector2((fiveX - modifierX) / sizeX, (fiveY - modifierY) / sizeY);
+				uv2[i + 5] = new Vector2((sixX - modifierX) / sizeX, (sixY - modifierY) / sizeY);
 			}
 			//y++;
 		}
 
+		mesh.subMeshCount = 2;
 		mesh.vertices = vertices;
-		mesh.triangles = triangles;
+		mesh.SetTriangles(triangles, 0);
+		//mesh.SetTriangles(triangles, 1);
 		mesh.RecalculateNormals();
 		mesh.uv = uv;
 
