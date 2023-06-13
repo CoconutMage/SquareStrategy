@@ -98,14 +98,40 @@ public class Chunk : MonoBehaviour
 				float sizeX = 288, sizeY = 256;
 				float modifierX = -0.5f, modifierY = 0.5f;
 				int textureIndexX, textureIndexY;
-				float offsetX = Random.Range(0, 9999);
 				//-----------------------------------------------------------------------------
 
 				//Debug.Log("Perlin: " + Mathf.PerlinNoise(x / (float)xSize, y / (float)ySize));
-				Debug.Log("Index: " + chunkIndex + " : " + x + " : " + (xSize * (chunkIndex % map.xSize)) * (offsetSide + offsetEdge) + " : " + (float)(xSize * map.xSize * (offsetSide + offsetEdge)));
-				float perlinVal = Mathf.PerlinNoise((x + (xSize * (chunkIndex % map.xSize) * (offsetSide + offsetEdge)))  / (float)(xSize * map.xSize * (offsetSide + offsetEdge)), (y +(ySize * (chunkIndex / map.xSize) * height)) / (float)(ySize * map.ySize * height));
+				//Debug.Log("Index: " + chunkIndex + " : " + x + " : " + (xSize * (chunkIndex % map.xSize)) * (offsetSide + offsetEdge) + " : " + (float)(xSize * map.xSize * (offsetSide + offsetEdge)));
 
-				if (perlinVal <= 0.4f)
+				//These numbers I pulled out of my ass, so edit for your pleasure. Except for coords and map size, dont edit those
+				float xCord = x + (xSize * (chunkIndex % map.xSize) * (offsetSide + offsetEdge)), yCord = y + (ySize * (chunkIndex / map.xSize) * height);
+				float mapSizeX = (float)(xSize * map.xSize * (offsetSide + offsetEdge)), mapSizeY = (float)(ySize * map.ySize * height);
+				float offsetX = map.noiseOffsetX, offsetY = map.noiseOffsetY;
+				//How many iterations of less impactfull noise functions are layered on
+				int octave = 3;
+				   //How much detail is added for each octave. Basically increases the frequency for each successive octave
+				int lacunarity = 2;
+				   //How bunched together the hills are. Think frequency of a sound wave
+				float frequency = 1.75f;
+				   //How high and low the peaks and valleys are
+				float amplitude = 10;
+				   //How much less impactful each successive octave is. Basically reduces the amplitutude of each octave
+				float persistance = 0.5f;
+				float offsetZ = -2.5f;
+				float perlinVal = 0;
+				
+				//-----------------------------------------------------------------------------
+
+				for (int k = 0; k < octave; k++)
+				{
+					perlinVal += (Mathf.PerlinNoise((offsetX + xCord) / mapSizeX * frequency * (Mathf.Pow(lacunarity, k)), (offsetY + yCord) / mapSizeY * frequency * (Mathf.Pow(lacunarity, k)))) * Mathf.Pow(persistance, k);
+				}
+
+				perlinVal *= amplitude;
+				perlinVal += offsetZ;
+				Debug.Log("Index: " + chunkIndex + " : " + x + " : " + perlinVal);
+
+				if (perlinVal <= 3f)
                 {
 					tileType = 0;
 
@@ -121,7 +147,7 @@ public class Chunk : MonoBehaviour
 					uv[i + 4] = new Vector2((fiveX - modifierX) / sizeX, (fiveY - modifierY) / sizeY);
 					uv[i + 5] = new Vector2((sixX - modifierX) / sizeX, (sixY - modifierY) / sizeY);
 				}
-				else if (perlinVal > 0.4f && perlinVal <= 0.55f)
+				else if (perlinVal > 3f && perlinVal <= 6f)
 				{
 					if (r <= 90)
 					{
@@ -156,7 +182,7 @@ public class Chunk : MonoBehaviour
 						uv[i + 5] = new Vector2((sixX - modifierX) / sizeX, (sixY - modifierY) / sizeY);
 					}
 				}
-				else if (perlinVal > 0.55f && perlinVal <= 0.7f)
+				else if (perlinVal > 6f && perlinVal <= 8f)
 				{
 					tileType = 0;
 
@@ -172,7 +198,7 @@ public class Chunk : MonoBehaviour
 					uv[i + 4] = new Vector2((fiveX - modifierX) / sizeX, (fiveY - modifierY) / sizeY);
 					uv[i + 5] = new Vector2((sixX - modifierX) / sizeX, (sixY - modifierY) / sizeY);
 				}
-				else if (perlinVal > 0.7f)
+				else if (perlinVal > 8f)
 				{
 					tileType = 0;
 

@@ -11,6 +11,7 @@ public class Map : MonoBehaviour
 
 	MapData data;
 	Chunk chunkScript;
+	public float noiseOffsetX, noiseOffsetY;
 
 	private void Start()
 	{
@@ -22,6 +23,9 @@ public class Map : MonoBehaviour
 		Instance = this;
 
 		data = MapData.Instance;
+
+		noiseOffsetX = Random.Range(0, 9999);
+		noiseOffsetY = Random.Range(0, 9999);
 
 		Generate();
 	}
