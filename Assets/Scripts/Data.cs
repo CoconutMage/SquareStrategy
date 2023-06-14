@@ -37,9 +37,10 @@ public class Data : MonoBehaviour
 		cities = new Dictionary<string, City>();
 
 		leaderImages = new Dictionary<string, Sprite>();
+		AddData();
 	}
 
-	void Start()
+	void AddData()
 	{
 		leaderImages["Stalin"] = Resources.Load<Sprite>("Pictures/Stalin");
 		leaderImages["Wojtek"] = Resources.Load<Sprite>("Pictures/Wojtek");

@@ -97,10 +97,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 950f3a941502c2a4e80341289bc96e60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  xSize: 10
-  ySize: 10
   chunkIndex: 0
   chunkPosition: {x: 0, y: 0}
+  labelPrefab: {fileID: 5126836730560684902, guid: 856f7609d4901a347b1b168f0b389e52, type: 3}
 --- !u!64 &1964846242441901581
 MeshCollider:
   m_ObjectHideFlags: 0

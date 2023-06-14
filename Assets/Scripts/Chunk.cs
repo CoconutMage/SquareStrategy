@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
@@ -7,7 +8,7 @@ public class Chunk : MonoBehaviour
 	Data data;
 	Map map;
 
-	public int xSize, ySize;
+	int xSize, ySize;
 	public int chunkIndex;
 	public Vector2 chunkPosition;
 
@@ -22,14 +23,17 @@ public class Chunk : MonoBehaviour
 	}
 	void Start()
 	{
-		Generate();
+		xSize = map.chunkXSize;
+		ySize = map.chunkYSize;
+		RenderMap();
 	}
 
 	//private Vector3[] vertices;
 	private List<Vector3> vertices;
 	private Mesh mesh;
+	public GameObject labelPrefab;
 
-	private void Generate()
+	private void RenderMap()
 	{
 		GetComponent<MeshFilter>().mesh = mesh = new Mesh();
 		GetComponent<MeshCollider>().sharedMesh = mesh;
@@ -54,12 +58,18 @@ public class Chunk : MonoBehaviour
 		   //The x length of the angled side on the left and right edges
 		float offsetEdge = (height * 0.5f) * Mathf.Tan(30 * Mathf.Deg2Rad);
 
-		float blendRegion = 0.15f;
+		float blendRegion = 0.20f;
 
 		Color grassColor = Color.green;
 		Color hillColor = new Color(0.3f, 0.3f, 0.3f);
 		Color mountainColor = Color.gray;
 		Color waterColor = Color.blue;
+
+		Dictionary<string, Color> colorDict = new Dictionary<string, Color>();
+		colorDict["water"] = Color.blue;
+		colorDict["grass"] = Color.green;
+		colorDict["hill"] = new Color(0.3f, 0.3f, 0.3f);
+		colorDict["mountain"] = Color.gray;
 
 		for (int i = 0, ti = 0, index = 0; y < ySize; y++)
 		{
@@ -67,32 +77,9 @@ public class Chunk : MonoBehaviour
 			for (x = 0; colNum < xSize; x += offsetSide + offsetEdge, i += 25, ti += 12, index++)
 			{
 				if (colNum % 2 != 0) y += (0.5f * height);
-
-				/*vertices.Add(new Vector3(x, y));
-				vertices.Add(new Vector3(x - offsetEdge, y + (0.5f * height)));
-				vertices.Add(new Vector3(x, y + height));
-
-				vertices.Add(new Vector3(x + offsetSide, y + height));
-				vertices.Add(new Vector3(x + offsetEdge + offsetSide, y + (0.5f * height)));
-				vertices.Add(new Vector3(x + offsetSide, y));
-
-				triangles.Add(i);
-				triangles.Add(i + 1);
-				triangles.Add(i + 2);
-
-				triangles.Add(i);
-				triangles.Add(i + 2);
-				triangles.Add(i + 5);
-
-				triangles.Add(i + 2);
-				triangles.Add(i + 4);
-				triangles.Add(i + 5);
-
-				triangles.Add(i + 2);
-				triangles.Add(i + 3);
-				triangles.Add(i + 4);*/
-
-				vertices.Add(new Vector3(x, y));
+				
+                #region forbiddenLand
+                vertices.Add(new Vector3(x, y));
 
 				vertices.Add(new Vector3(x - (offsetSide / 2) * (1 - blendRegion), y - ((height / 2) * (1 - blendRegion))));
 				vertices.Add(new Vector3(x - ((offsetEdge + (offsetSide / 2)) * (1 - blendRegion)), y));
@@ -321,120 +308,434 @@ public class Chunk : MonoBehaviour
 				triangles.Add(i + 24);
 				triangles.Add(i + 7);
 
-				int r = Random.Range(0,101);
-				int tileType = 0;
+				#endregion
 
-				//Debug.Log("Perlin: " + Mathf.PerlinNoise(x / (float)xSize, y / (float)ySize));
-				//Debug.Log("Index: " + chunkIndex + " : " + x + " : " + (xSize * (chunkIndex % map.xSize)) * (offsetSide + offsetEdge) + " : " + (float)(xSize * map.xSize * (offsetSide + offsetEdge)));
-
-				//These numbers I pulled out of my ass, so edit for your pleasure. Except for coords and map size, dont edit those
-				float xCord = x + (xSize * (chunkIndex % map.xSize) * (offsetSide + offsetEdge)), yCord = y + (ySize * (chunkIndex / map.xSize) * height);
-				float mapSizeX = (float)(xSize * map.xSize * (offsetSide + offsetEdge)), mapSizeY = (float)(ySize * map.ySize * height);
-				float offsetX = map.noiseOffsetX, offsetY = map.noiseOffsetY;
-				//How many iterations of less impactfull noise functions are layered on
-				int octave = 3;
-				   //How much detail is added for each octave. Basically increases the frequency for each successive octave
-				int lacunarity = 2;
-				   //How bunched together the hills are. Think frequency of a sound wave
-				float frequency = 3.75f;
-				   //How high and low the peaks and valleys are
-				float amplitude = 10;
-				   //How much less impactful each successive octave is. Basically reduces the amplitutude of each octave
-				float persistance = 0.5f;
-				float offsetZ = -2.5f;
-				float perlinVal = 0;
-				
-				//-----------------------------------------------------------------------------
-
-				for (int k = 0; k < octave; k++)
-				{
-					perlinVal += (Mathf.PerlinNoise((offsetX + xCord) / mapSizeX * frequency * (Mathf.Pow(lacunarity, k)), (offsetY + yCord) / mapSizeY * frequency * (Mathf.Pow(lacunarity, k)))) * Mathf.Pow(persistance, k);
-				}
-
-				perlinVal *= amplitude;
-				perlinVal += offsetZ;
-				//Debug.Log("Index: " + chunkIndex + " : " + x + " : " + perlinVal);
-
-				if (perlinVal <= 3.5f)
-				{
-					tileType = 0;
-					colors.Add(waterColor);
-
-					colors.Add(waterColor);
-					colors.Add(waterColor);
-					colors.Add(waterColor);
-
-					colors.Add(waterColor);
-					colors.Add(waterColor);
-					colors.Add(waterColor);
-				}
-				else if (perlinVal > 3.5f && perlinVal <= 7f)
-				{
-					tileType = 1;
-					colors.Add(grassColor);
-					
-					colors.Add(grassColor);
-					colors.Add(grassColor);
-					colors.Add(grassColor);
-
-					colors.Add(grassColor);
-					colors.Add(grassColor);
-					colors.Add(grassColor);
-				}
-				else if (perlinVal > 7f && perlinVal <= 8.75f)
-				{
-					tileType = 2;
-					colors.Add(hillColor);
-					
-					colors.Add(hillColor);
-					colors.Add(hillColor);
-					colors.Add(hillColor);
-
-					colors.Add(hillColor);
-					colors.Add(hillColor);
-					colors.Add(hillColor);
-				}
-				else
-				{
-					tileType = 3;
-					colors.Add(mountainColor);
-					
-					colors.Add(mountainColor);
-					colors.Add(mountainColor);
-					colors.Add(mountainColor);
-
-					colors.Add(mountainColor);
-					colors.Add(mountainColor);
-					colors.Add(mountainColor);
-				}
+				GameObject label = Instantiate(labelPrefab);
+				label.transform.parent = transform;
+				label.transform.localPosition = new Vector3(x, y);
+				label.GetComponent<TextMeshPro>().text = index.ToString();
 
 				if (colNum % 2 != 0) y -= (0.5f * height);
 
-				//y++;
+				int r = Random.Range(0,101);
 
-				//PERLIN NOISE CODE USED TO GO HERE
+				colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
 
-				/*for (int zz = 0; zz < 6; zz++)
+				colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+				colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+				colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+
+				colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+				colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+				colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+
+				if ((chunkIndex % map.xSize == 0 && index % xSize == 0) || (chunkIndex % map.xSize == map.xSize - 1 && index % xSize == xSize - 1) || (chunkIndex / ((map.ySize - 1) * map.xSize) >= 1 && index / xSize >= ySize - 1) || (chunkIndex < map.xSize && index < xSize))
+                {
+
+					/*if (index % 2 == 0 && index >= 10)
+                    {
+						colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1 - xSize].tileType]) * 0.5f);
+						colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1 - xSize].tileType]) * 0.5f);
+
+						colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1].tileType]) * 0.5f);
+						colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1].tileType]) * 0.5f);
+					}
+					else if (index <= 90 && index <= 90)
+                    {
+						colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1].tileType]) * 0.5f);
+						colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1].tileType]) * 0.5f);
+
+						colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1 + xSize].tileType]) * 0.5f);
+						colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1 + xSize].tileType]) * 0.5f);
+					}
+					else
+                    {
+						colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+						colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+
+						colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+						colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+					}*/
+
+
+					/*colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+					colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+					colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+
+					colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+					colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+					colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+
+					colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+					colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+
+					colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+					colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+
+					colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+					colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+
+					colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+					colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+
+					colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+					colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+
+					colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+					colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);*/
+
+					colors.Add(Color.yellow);
+					colors.Add(Color.yellow);
+					colors.Add(Color.yellow);
+
+					colors.Add(Color.yellow);
+					colors.Add(Color.yellow);
+					colors.Add(Color.yellow);
+
+					colors.Add(Color.yellow);
+					colors.Add(Color.yellow);
+
+					colors.Add(Color.yellow);
+					colors.Add(Color.yellow);
+
+					colors.Add(Color.yellow);
+					colors.Add(Color.yellow);
+
+					colors.Add(Color.yellow);
+					colors.Add(Color.yellow);
+
+					colors.Add(Color.yellow);
+					colors.Add(Color.yellow);
+
+					colors.Add(Color.yellow);
+					colors.Add(Color.yellow);
+				}
+				else
+                {
+					if (index % xSize == xSize - 1 || index / xSize >= ySize - 1)
+                    {
+						colors.Add(Color.yellow);
+						colors.Add(Color.yellow);
+						colors.Add(Color.yellow);
+
+						colors.Add(Color.yellow);
+						colors.Add(Color.yellow);
+						colors.Add(Color.yellow);
+
+						colors.Add(Color.yellow);
+						colors.Add(Color.yellow);
+
+						colors.Add(Color.yellow);
+						colors.Add(Color.yellow);
+
+						colors.Add(Color.yellow);
+						colors.Add(Color.yellow);
+
+						colors.Add(Color.yellow);
+						colors.Add(Color.yellow);
+
+						colors.Add(Color.yellow);
+						colors.Add(Color.yellow);
+
+						colors.Add(Color.yellow);
+						colors.Add(Color.yellow);
+					}
+					else if (index < xSize)
+                    {
+						if (index == 0)
+						{
+							colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex - map.xSize - 1].tiles[index - 1 + (xSize * ySize)].tileType] + colorDict[data.map[chunkIndex - map.xSize].tiles[index - xSize + (xSize * ySize)].tileType]) / 3);
+							colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex - map.xSize - 1].tiles[index - 1 + (xSize * ySize)].tileType] + colorDict[data.map[chunkIndex - 1].tiles[index - 1 + xSize].tileType]) / 3);
+							colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex - 1].tiles[index - 1 + xSize].tileType] + colorDict[data.map[chunkIndex].tiles[index + xSize].tileType]) / 3);
+
+							colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index + 1].tileType] + colorDict[data.map[chunkIndex].tiles[index + xSize].tileType]) / 3);
+							colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index + 1].tileType] + colorDict[data.map[chunkIndex - map.xSize].tiles[index - xSize + 1 + (xSize * ySize)].tileType]) / 3);
+							colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex - map.xSize].tiles[index - xSize + (xSize * ySize)].tileType] + colorDict[data.map[chunkIndex - map.xSize].tiles[index - xSize + 1 + (xSize * ySize)].tileType]) / 3);
+
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex - map.xSize - 1].tiles[index - 1 + (xSize * ySize)].tileType], 0.5f));
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex - map.xSize - 1].tiles[index - 1 + (xSize * ySize)].tileType], 0.5f));
+
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex - 1].tiles[index - 1 + xSize].tileType], 0.5f));
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex - 1].tiles[index - 1 + xSize].tileType], 0.5f));
+
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + xSize].tileType], 0.5f));
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + xSize].tileType], 0.5f));
+
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + 1].tileType], 0.5f));
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + 1].tileType], 0.5f));
+
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex - map.xSize].tiles[index + 1 - xSize + (xSize * ySize)].tileType], 0.5f));
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex - map.xSize].tiles[index + 1 - xSize + (xSize * ySize)].tileType], 0.5f));
+
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex - map.xSize].tiles[index - xSize + (xSize * ySize)].tileType], 0.5f));
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex - map.xSize].tiles[index - xSize + (xSize * ySize)].tileType], 0.5f));
+						}
+						else if (index % 2 == 0)
+						{
+							colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex - map.xSize].tiles[index - xSize - 1 + (xSize * ySize)].tileType] + colorDict[data.map[chunkIndex - map.xSize].tiles[index - xSize + (xSize * ySize)].tileType]) / 3);
+							colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1].tileType] + colorDict[data.map[chunkIndex - map.xSize].tiles[index - 1 - xSize + (xSize * ySize)].tileType]) / 3);
+							colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1].tileType] + colorDict[data.map[chunkIndex].tiles[index + xSize].tileType]) / 3);
+
+							colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index + 1].tileType] + colorDict[data.map[chunkIndex].tiles[index + xSize].tileType]) / 3);
+							colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index + 1].tileType] + colorDict[data.map[chunkIndex - map.xSize].tiles[index - xSize + 1 + (xSize * ySize)].tileType]) / 3);
+							colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex - map.xSize].tiles[index - xSize + (xSize * ySize)].tileType] + colorDict[data.map[chunkIndex - map.xSize].tiles[index - xSize + 1 + (xSize * ySize)].tileType]) / 3);
+
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex - map.xSize].tiles[index - xSize - 1 + (xSize * ySize)].tileType], 0.5f));
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex - map.xSize].tiles[index - xSize - 1 + (xSize * ySize)].tileType], 0.5f));
+
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index - 1].tileType], 0.5f));
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index - 1].tileType], 0.5f));
+
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + xSize].tileType], 0.5f));
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + xSize].tileType], 0.5f));
+
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + 1].tileType], 0.5f));
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + 1].tileType], 0.5f));
+
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex - map.xSize].tiles[index + 1 - xSize + (xSize * ySize)].tileType], 0.5f));
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex - map.xSize].tiles[index + 1 - xSize + (xSize * ySize)].tileType], 0.5f));
+
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex - map.xSize].tiles[index - xSize + (xSize * ySize)].tileType], 0.5f));
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex - map.xSize].tiles[index - xSize + (xSize * ySize)].tileType], 0.5f));
+						}
+						else
+						{
+							colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex - map.xSize].tiles[index - xSize + (xSize * ySize)].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1].tileType]) / 3);
+							colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1 + xSize].tileType]) / 3);
+							colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index + xSize].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1 + xSize].tileType]) / 3);
+
+							colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index + 1 + xSize].tileType] + colorDict[data.map[chunkIndex].tiles[index + xSize].tileType]) / 3);
+							colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index + 1].tileType] + colorDict[data.map[chunkIndex].tiles[index + 1 + xSize].tileType]) / 3);
+							colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex - map.xSize].tiles[index - xSize + (xSize * ySize)].tileType] + colorDict[data.map[chunkIndex].tiles[index + 1].tileType]) / 3);
+
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index - 1].tileType], 0.5f));
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index - 1].tileType], 0.5f));
+
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + xSize - 1].tileType], 0.5f));
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + xSize - 1].tileType], 0.5f));
+
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + xSize].tileType], 0.5f));
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + xSize].tileType], 0.5f));
+
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + 1 + xSize].tileType], 0.5f));
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + 1 + xSize].tileType], 0.5f));
+
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + 1].tileType], 0.5f));
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + 1].tileType], 0.5f));
+
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex - map.xSize].tiles[index - xSize + (xSize * ySize)].tileType], 0.5f));
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex - map.xSize].tiles[index - xSize + (xSize * ySize)].tileType], 0.5f));
+						}
+					}
+					else if (index % xSize == 0)
+                    {
+						colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex - 1].tiles[index - 1].tileType] + colorDict[data.map[chunkIndex].tiles[index - xSize].tileType]) / 3);
+						colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex - 1].tiles[index - 1].tileType] + colorDict[data.map[chunkIndex - 1].tiles[index - 1 + xSize].tileType]) / 3);
+						colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex - 1].tiles[index - 1 + xSize].tileType] + colorDict[data.map[chunkIndex].tiles[index + xSize].tileType]) / 3);
+
+						colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index + 1].tileType] + colorDict[data.map[chunkIndex].tiles[index + xSize].tileType]) / 3);
+						colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index + 1].tileType] + colorDict[data.map[chunkIndex].tiles[index - xSize + 1].tileType]) / 3);
+						colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - xSize].tileType] + colorDict[data.map[chunkIndex].tiles[index - xSize + 1].tileType]) / 3);
+
+						colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex - 1].tiles[index - 1].tileType], 0.5f));
+						colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex - 1].tiles[index - 1].tileType], 0.5f));
+
+						colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex - 1].tiles[index - 1 + xSize].tileType], 0.5f));
+						colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex - 1].tiles[index - 1 + xSize].tileType], 0.5f));
+
+						colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + xSize].tileType], 0.5f));
+						colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + xSize].tileType], 0.5f));
+
+						colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + 1].tileType], 0.5f));
+						colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + 1].tileType], 0.5f));
+
+						colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + 1 - xSize].tileType], 0.5f));
+						colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + 1 - xSize].tileType], 0.5f));
+
+						colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index - xSize].tileType], 0.5f));
+						colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index - xSize].tileType], 0.5f));
+					}
+					else
+                    {
+						if (index % 2 == 0)
+						{
+							colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - xSize - 1].tileType] + colorDict[data.map[chunkIndex].tiles[index - xSize].tileType]) / 3);
+							colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1 - xSize].tileType]) / 3);
+							colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1].tileType] + colorDict[data.map[chunkIndex].tiles[index + xSize].tileType]) / 3);
+
+							colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index + 1].tileType] + colorDict[data.map[chunkIndex].tiles[index + xSize].tileType]) / 3);
+							colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index + 1].tileType] + colorDict[data.map[chunkIndex].tiles[index - xSize + 1].tileType]) / 3);
+							colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - xSize].tileType] + colorDict[data.map[chunkIndex].tiles[index - xSize + 1].tileType]) / 3);
+
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index - xSize - 1].tileType], 0.5f));
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index - xSize - 1].tileType], 0.5f));
+
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index - 1].tileType], 0.5f));
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index - 1].tileType], 0.5f));
+
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + xSize].tileType], 0.5f));
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + xSize].tileType], 0.5f));
+
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + 1].tileType], 0.5f));
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + 1].tileType], 0.5f));
+
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + 1 - xSize].tileType], 0.5f));
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + 1 - xSize].tileType], 0.5f));
+
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index - xSize].tileType], 0.5f));
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index - xSize].tileType], 0.5f));
+						}
+						else
+						{
+							colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - xSize].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1].tileType]) / 3);
+							colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1 + xSize].tileType]) / 3);
+							colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index + xSize].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1 + xSize].tileType]) / 3);
+
+							colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index + 1 + xSize].tileType] + colorDict[data.map[chunkIndex].tiles[index + xSize].tileType]) / 3);
+							colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index + 1].tileType] + colorDict[data.map[chunkIndex].tiles[index + 1 + xSize].tileType]) / 3);
+							colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - xSize].tileType] + colorDict[data.map[chunkIndex].tiles[index + 1].tileType]) / 3);
+
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index - 1].tileType], 0.5f));
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index - 1].tileType], 0.5f));
+
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + xSize - 1].tileType], 0.5f));
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + xSize - 1].tileType], 0.5f));
+
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + xSize].tileType], 0.5f));
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + xSize].tileType], 0.5f));
+							
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + 1 + xSize].tileType], 0.5f));
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + 1 + xSize].tileType], 0.5f));
+
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + 1].tileType], 0.5f));
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index + 1].tileType], 0.5f));
+
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index - xSize].tileType], 0.5f));
+							colors.Add(Color.Lerp(colorDict[data.map[chunkIndex].tiles[index].tileType], colorDict[data.map[chunkIndex].tiles[index - xSize].tileType], 0.5f));
+						}
+					}
+					/*colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+					colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+
+					colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+					colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);*/
+				}
+				/*if ((colNum % 2 == 0 && (index / 10) % 2 == 0) || (colNum % 2 != 0 && (index / 10) % 2 != 0))
 				{
-					uv[0 + zz] = data.TileMap["Stone"][zz];
+					//top left and top right are same row
+					if (index % xSize != 0 && index >= 10)
+					{
+						colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - xSize - 1].tileType]) * 0.5f);
+						colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - xSize - 1].tileType]) * 0.5f);
+
+						colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1].tileType]) * 0.5f);
+						colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1].tileType]) * 0.5f);
+					}
+					else if (index % xSize == 0)
+                    {
+						colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+						colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+
+						colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+						colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+					}
+					else
+                    {
+						colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+						colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+
+						colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1].tileType]) * 0.5f);
+						colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1].tileType]) * 0.5f);
+					}
+                }
+				else if ((colNum % 2 != 0 && (index / 10) % 2 == 0) || (colNum % 2 == 0 && (index / 10) % 2 != 0))
+				{
+					//bottom left and bottom right are same row
+					if (index % xSize == 0)
+					{
+						colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+						colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+
+						colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+						colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+					}
+					else if (index / 10 != ySize - 1)
+					{
+						Debug.Log("INdex: " + index );
+						colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1].tileType]) * 0.5f);
+						colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1].tileType]) * 0.5f);
+
+						colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1].tileType]) * 0.5f);
+						colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1].tileType]) * 0.5f);
+					}
+					else if (index / 10 = map.ySize)
+					{
+						colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1].tileType]) * 0.5f);
+						colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1].tileType]) * 0.5f);
+
+						colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+						colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+					}
+					else
+					{
+						colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+						colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+
+						colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1].tileType]) * 0.5f);
+						colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1].tileType]) * 0.5f);
+					}
 				}*/
 
-				data.PopulateChunkTileData(tileType, chunkIndex, index, new Vector2(0, 0), "Stone");
-				//mapData.PopulateChunkTileData(r, chunkIndex, index, new Vector2(0, 0), "Stone");
+
+				/*if (index % xSize != 0 && index / xSize >= 1 && index / xSize != map.xSize - 1 && y % 2 == 0)
+				{
+					colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1].tileType]) * 0.5f);
+					colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1].tileType]) * 0.5f);
+
+					colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index + xSize].tileType]) * 0.5f);
+					colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index + xSize].tileType]) * 0.5f);
+				}
+				else if (index % xSize != 0 && index / xSize >= 1 && index / xSize != map.xSize - 1 && y % 2 == 0)
+				{
+					colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index + xSize].tileType]) * 0.5f);
+					colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index + xSize].tileType]) * 0.5f);
+
+					colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1].tileType]) * 0.5f);
+					colors.Add((colorDict[data.map[chunkIndex].tiles[index].tileType] + colorDict[data.map[chunkIndex].tiles[index - 1].tileType]) * 0.5f);
+				}
+				else
+				{
+					colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+					colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+
+					colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+					colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+				}*/
+
+				/*colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+				colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+
+				colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+				colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+
+				colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+				colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+
+				colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);
+				colors.Add(colorDict[data.map[chunkIndex].tiles[index].tileType]);*/
+
 				colNum++;
 			}
-			//y++;
 		}
 
 		//mesh.subMeshCount = 2;
 		mesh.vertices = vertices.ToArray();
-		//mesh.colors = colors.ToArray();
+		mesh.colors = colors.ToArray();
 		mesh.triangles = triangles.ToArray();
 		//mesh.SetTriangles(triangles, 0);
 		//mesh.SetTriangles(triangles, 1);
 		mesh.RecalculateNormals();
 		//mesh.uv = uv;
-
 	}
 
 	/* PERLIN NOISE CODE

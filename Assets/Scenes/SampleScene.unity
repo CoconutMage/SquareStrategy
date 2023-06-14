@@ -572,6 +572,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   xSize: 5
   ySize: 5
+  chunkXSize: 0
+  chunkYSize: 0
   chunkIndex: 0
   chunkPrefab: {fileID: 1964846242441901576, guid: 640a6a4074d21d8468ed0831b4fdc4ee, type: 3}
   noiseOffsetX: 0
@@ -2826,8 +2828,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2351ed5c5d193664fb524c113d96f4e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  xSize: 10
-  ySize: 5
+  xSize: 7
+  ySize: 3
+  chunkXSize: 8
+  chunkYSize: 8
   chunkIndex: 0
   chunkPrefab: {fileID: 1964846242441901576, guid: 640a6a4074d21d8468ed0831b4fdc4ee, type: 3}
   noiseOffsetX: 0
@@ -6294,7 +6298,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23.05
+  m_fontSize: 17.95
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -8647,7 +8651,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 12.4
+  m_fontSize: 10.15
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
