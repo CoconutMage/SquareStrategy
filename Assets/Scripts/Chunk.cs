@@ -122,12 +122,10 @@ public class Chunk : MonoBehaviour
 				perlinVal += offsetZ;
 				//Debug.Log("Index: " + chunkIndex + " : " + x + " : " + perlinVal);
 
-				if (perlinVal <= 3.5f)
-				{
-					tileType = 0;
-					colors.Add(waterColor);
-					colors.Add(waterColor);
-					colors.Add(waterColor);
+				//water?
+				if (perlinVal <= 3f)
+                {
+					tileType = 2;
 
 					colors.Add(waterColor);
 					colors.Add(waterColor);

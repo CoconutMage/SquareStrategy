@@ -8,6 +8,7 @@ using static Data;
 public class UI : MonoBehaviour
 {
 	Data data;
+	UnitData uData;
 	CameraController cam;
 
 	public TMP_Text landUnitsText;
@@ -38,14 +39,15 @@ public class UI : MonoBehaviour
 			return;
 		}
 		Instance = this;
-
-		data = Data.Instance;
-		cam = CameraController.Instance;
 	}
 
 
 	void Start()
 	{
+		data = Data.Instance;
+		uData = UnitData.Instance;
+		cam = CameraController.Instance;
+
 		playerCountry = data.countries["USA"];
 		UpdateResourceBar();
 
@@ -73,6 +75,106 @@ public class UI : MonoBehaviour
 	public void ResearchPanel1Button()
 	{
 		StartCoroutine(ResearchPanel1Transition());
+	}
+
+
+	public TMP_Text armor;
+	public TMP_Text speed;
+	public TMP_Text gun;
+	public TMP_Text reliability;
+	public TMP_Text bazinga;
+	int a = 0;
+	int s = 0;
+	int g = 0;
+	int r = 0;
+	public void TankDesignerButtonHandler(int i)
+	{
+		switch (i)
+		{
+			case 0:
+				if (a < 5)
+				{
+					a++;
+					armor.text = a.ToString();
+				}
+				break;
+			case 1:
+				if (a > 0)
+				{
+					a--;
+					armor.text = a.ToString();
+				}
+				break;
+
+			case 2:
+				if (s < 5)
+				{
+					s++;
+					speed.text = s.ToString();
+				}
+				break;
+			case 3:
+				if (s > 0)
+				{
+					s--;
+					speed.text = s.ToString();
+				}
+				break;
+
+			case 4:
+				if (g < 5)
+				{
+					g++;
+					gun.text = g.ToString();
+				}
+				break;
+			case 5:
+				if (g > 0)
+				{
+					g--;
+					gun.text = g.ToString();
+				}
+				break;
+
+			case 6:
+				if (r < 5)
+				{
+					r++;
+					reliability.text = r.ToString();
+				}
+				break;
+			case 7:
+				if (r > 0)
+				{
+					r--;
+					reliability.text = r.ToString();
+				}
+				break;
+			
+			case 8:
+				uData.CreateArmoredUnit("Test", 0, 0.0f, a, s, g, r);
+				break;
+			case 9:
+				Tile tile = data.map[0].tiles[0];
+				tile.landArmoredUnits[0] = uData.armoredUnits[0];
+				data.map[0].tiles[0] = tile;
+				bazinga.text = tile.landArmoredUnits[0].armor + "\n" + tile.landArmoredUnits[0].speed + "\n" + tile.landArmoredUnits[0].gun + "\n" + tile.landArmoredUnits[0].reliability;
+				GameObject tank = Instantiate(TankPrefab);
+				tank.transform.parent = GameObject.Find("Map").transform;
+				tank.transform.localPosition = data.map[0].tiles[0].coordinates;
+				tank.GetComponent<Unit>().thisUnit = uData.armoredUnits[0];
+				break;
+		}
+	}
+	public GameObject TankPrefab;
+
+
+	public RectTransform TankDesigner;
+	bool td;
+	public void DesignerButton()
+	{
+		td = !td;
+		TankDesigner.gameObject.SetActive(td);
 	}
 
 	public void ClosePoliticalPanel()
@@ -177,7 +279,7 @@ public class UI : MonoBehaviour
 		
 	}
 
-	public void DisplayCity(Data.City city)
+	public void DisplayCity(City city)
 	{
 		if (!city.Equals(Data.nullCity))
 		{
@@ -262,7 +364,7 @@ public class UI : MonoBehaviour
 				yield return null;
 			}
 			researchPanel1Out = false;
-			//cam.canZoom = true;
+			cam.canZoom = true;
 			researchPanel1Sliding = false;
 			StopCoroutine(ResearchPanel1Transition());
 		}
@@ -275,7 +377,7 @@ public class UI : MonoBehaviour
 				yield return null;
 			}
 			researchPanel1Out = true;
-			//cam.canZoom = false;
+			cam.canZoom = false;
 			researchPanel1Sliding = false;
 			StopCoroutine(ResearchPanel1Transition());
 		}
