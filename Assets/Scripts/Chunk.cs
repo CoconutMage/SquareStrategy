@@ -49,8 +49,12 @@ public class Chunk : MonoBehaviour
 		float y = 0;
 		float x;
 		float colNum = 0;
+		   //The length of one flat side
 		float offsetSide = (height / Mathf.Tan(60 * Mathf.Deg2Rad));
+		   //The x length of the angled side on the left and right edges
 		float offsetEdge = (height * 0.5f) * Mathf.Tan(30 * Mathf.Deg2Rad);
+
+		float blendRegion = 0.15f;
 
 		Color grassColor = Color.green;
 		Color hillColor = new Color(0.3f, 0.3f, 0.3f);
@@ -60,11 +64,11 @@ public class Chunk : MonoBehaviour
 		for (int i = 0, ti = 0, index = 0; y < ySize; y++)
 		{
 			colNum = 0;
-			for (x = 0; colNum < xSize; x += offsetSide + offsetEdge, i += 6, ti += 12, index++)
+			for (x = 0; colNum < xSize; x += offsetSide + offsetEdge, i += 25, ti += 12, index++)
 			{
 				if (colNum % 2 != 0) y += (0.5f * height);
 
-				vertices.Add(new Vector3(x, y));
+				/*vertices.Add(new Vector3(x, y));
 				vertices.Add(new Vector3(x - offsetEdge, y + (0.5f * height)));
 				vertices.Add(new Vector3(x, y + height));
 
@@ -86,7 +90,236 @@ public class Chunk : MonoBehaviour
 
 				triangles.Add(i + 2);
 				triangles.Add(i + 3);
+				triangles.Add(i + 4);*/
+
+				vertices.Add(new Vector3(x, y));
+
+				vertices.Add(new Vector3(x - (offsetSide / 2) * (1 - blendRegion), y - ((height / 2) * (1 - blendRegion))));
+				vertices.Add(new Vector3(x - ((offsetEdge + (offsetSide / 2)) * (1 - blendRegion)), y));
+				vertices.Add(new Vector3(x - (offsetSide / 2) * (1 - blendRegion), y + ((height / 2) * (1 - blendRegion))));
+
+				vertices.Add(new Vector3(x + (offsetSide / 2) * (1 - blendRegion), y + ((height / 2) * (1 - blendRegion))));
+				vertices.Add(new Vector3(x + ((offsetEdge + (offsetSide / 2)) * (1 - blendRegion)), y));
+				vertices.Add(new Vector3(x + (offsetSide / 2) * (1 - blendRegion), y - ((height / 2) * (1 - blendRegion))));
+
+				vertices.Add(new Vector3(x - (offsetSide / 2), y - (height / 2)));
+				vertices.Add(new Vector3(x - offsetEdge - (offsetSide / 2), y));
+				vertices.Add(new Vector3(x - (offsetSide / 2), y + (height / 2)));
+
+				vertices.Add(new Vector3(x + (offsetSide / 2), y + (height / 2)));
+				vertices.Add(new Vector3(x + offsetEdge + (offsetSide / 2), y));
+				vertices.Add(new Vector3(x + (offsetSide / 2), y - (height / 2)));
+
+				//vertices.Add((((vertices[i + 1] + vertices[i + 2]) / 2) / (1 - blendRegion)) - ((vertices[i + 1] + vertices[i + 2]) / 2));
+				//vertices.Add((((vertices[i + 1] + vertices[i + 2]) / 2) / (1 - blendRegion)) + ((vertices[i + 1] + vertices[i + 2]) / 2));
+
+				float distBetween = Vector3.Distance(vertices[i + 1], vertices[i + 7]);
+				float inwardDist = Mathf.Cos(60 * Mathf.Deg2Rad) * distBetween;
+				float xDist = Mathf.Cos(60 * Mathf.Deg2Rad) * inwardDist;
+				float yDist = Mathf.Sin(60 * Mathf.Deg2Rad) * inwardDist;
+				Vector3 loc = new Vector3(vertices[i + 7].x - xDist, vertices[i + 7].y + yDist);
+				vertices.Add(loc);
+
+				distBetween = Vector3.Distance(vertices[i + 2], vertices[i + 8]);
+				inwardDist = Mathf.Cos(60 * Mathf.Deg2Rad) * distBetween;
+				xDist = Mathf.Cos(60 * Mathf.Deg2Rad) * inwardDist;
+				yDist = Mathf.Sin(60 * Mathf.Deg2Rad) * inwardDist;
+				loc = new Vector3(vertices[i + 8].x + xDist, vertices[i + 8].y - yDist);
+				vertices.Add(loc);
+
+				//15
+				distBetween = Vector3.Distance(vertices[i + 2], vertices[i + 8]);
+				inwardDist = Mathf.Cos(60 * Mathf.Deg2Rad) * distBetween;
+				xDist = Mathf.Cos(60 * Mathf.Deg2Rad) * inwardDist;
+				yDist = Mathf.Sin(60 * Mathf.Deg2Rad) * inwardDist;
+				loc = new Vector3(vertices[i + 8].x + xDist, vertices[i + 8].y + yDist);
+				vertices.Add(loc);
+
+				distBetween = Vector3.Distance(vertices[i + 3], vertices[i + 9]);
+				inwardDist = Mathf.Cos(60 * Mathf.Deg2Rad) * distBetween;
+				xDist = Mathf.Cos(60 * Mathf.Deg2Rad) * inwardDist;
+				yDist = Mathf.Sin(60 * Mathf.Deg2Rad) * inwardDist;
+				loc = new Vector3(vertices[i + 9].x - xDist, vertices[i + 9].y - yDist);
+				vertices.Add(loc);
+
+				//17
+				loc = new Vector3(vertices[i + 3].x, vertices[i + 9].y);
+				vertices.Add(loc);
+
+				loc = new Vector3(vertices[i + 4].x, vertices[i + 10].y);
+				vertices.Add(loc);
+
+				//19
+				distBetween = Vector3.Distance(vertices[i + 4], vertices[i + 10]);
+				inwardDist = Mathf.Cos(60 * Mathf.Deg2Rad) * distBetween;
+				xDist = Mathf.Cos(60 * Mathf.Deg2Rad) * inwardDist;
+				yDist = Mathf.Sin(60 * Mathf.Deg2Rad) * inwardDist;
+				loc = new Vector3(vertices[i + 10].x + xDist, vertices[i + 10].y - yDist);
+				vertices.Add(loc);
+
+				distBetween = Vector3.Distance(vertices[i + 5], vertices[i + 11]);
+				inwardDist = Mathf.Cos(60 * Mathf.Deg2Rad) * distBetween;
+				xDist = Mathf.Cos(60 * Mathf.Deg2Rad) * inwardDist;
+				yDist = Mathf.Sin(60 * Mathf.Deg2Rad) * inwardDist;
+				loc = new Vector3(vertices[i + 11].x - xDist, vertices[i + 11].y + yDist);
+				vertices.Add(loc);
+
+				//21
+				distBetween = Vector3.Distance(vertices[i + 5], vertices[i + 11]);
+				inwardDist = Mathf.Cos(60 * Mathf.Deg2Rad) * distBetween;
+				xDist = Mathf.Cos(60 * Mathf.Deg2Rad) * inwardDist;
+				yDist = Mathf.Sin(60 * Mathf.Deg2Rad) * inwardDist;
+				loc = new Vector3(vertices[i + 11].x - xDist, vertices[i + 11].y - yDist);
+				vertices.Add(loc);
+
+				distBetween = Vector3.Distance(vertices[i + 6], vertices[i + 12]);
+				inwardDist = Mathf.Cos(60 * Mathf.Deg2Rad) * distBetween;
+				xDist = Mathf.Cos(60 * Mathf.Deg2Rad) * inwardDist;
+				yDist = Mathf.Sin(60 * Mathf.Deg2Rad) * inwardDist;
+				loc = new Vector3(vertices[i + 12].x + xDist, vertices[i + 12].y + yDist);
+				vertices.Add(loc);
+
+				//23
+				loc = new Vector3(vertices[i + 6].x, vertices[i + 12].y);
+				vertices.Add(loc);
+
+				loc = new Vector3(vertices[i + 1].x, vertices[i + 7].y);
+				vertices.Add(loc);
+
+				/*vertices.Add(new Vector3(x + ((offsetEdge + (offsetSide / 2)) * (1 - blendRegion)), y));
+				vertices.Add(new Vector3(x + (offsetSide / 2) * (1 - blendRegion), y - ((height / 2) * (1 - blendRegion))));
+
+				vertices.Add(new Vector3(x + ((offsetEdge + (offsetSide / 2)) * (1 - blendRegion)), y));
+				vertices.Add(new Vector3(x + (offsetSide / 2) * (1 - blendRegion), y - ((height / 2) * (1 - blendRegion))));
+
+				vertices.Add(new Vector3(x + ((offsetEdge + (offsetSide / 2)) * (1 - blendRegion)), y));
+				vertices.Add(new Vector3(x + (offsetSide / 2) * (1 - blendRegion), y - ((height / 2) * (1 - blendRegion))));
+
+				vertices.Add(new Vector3(x + ((offsetEdge + (offsetSide / 2)) * (1 - blendRegion)), y));
+				vertices.Add(new Vector3(x + (offsetSide / 2) * (1 - blendRegion), y - ((height / 2) * (1 - blendRegion))));
+
+				vertices.Add(new Vector3(x + ((offsetEdge + (offsetSide / 2)) * (1 - blendRegion)), y));
+				vertices.Add(new Vector3(x + (offsetSide / 2) * (1 - blendRegion), y - ((height / 2) * (1 - blendRegion))));*/
+
+				triangles.Add(i);
+				triangles.Add(i + 1);
+				triangles.Add(i + 2);
+
+				triangles.Add(i);
+				triangles.Add(i + 2);
+				triangles.Add(i + 3);
+
+				triangles.Add(i);
+				triangles.Add(i + 3);
 				triangles.Add(i + 4);
+
+				triangles.Add(i);
+				triangles.Add(i + 4);
+				triangles.Add(i + 5);
+
+				triangles.Add(i);
+				triangles.Add(i + 5);
+				triangles.Add(i + 6);
+
+				triangles.Add(i);
+				triangles.Add(i + 6);
+				triangles.Add(i + 1);
+
+				triangles.Add(i + 1);
+				triangles.Add(i + 14);
+				triangles.Add(i + 2);
+
+				triangles.Add(i + 13);
+				triangles.Add(i + 14);
+				triangles.Add(i + 1);
+
+				triangles.Add(i + 1);
+				triangles.Add(i + 7);
+				triangles.Add(i + 13);
+
+				triangles.Add(i + 14);
+				triangles.Add(i + 8);
+				triangles.Add(i + 2);
+
+				triangles.Add(i + 2);
+				triangles.Add(i + 15);
+				triangles.Add(i + 16);
+
+				triangles.Add(i + 2);
+				triangles.Add(i + 16);
+				triangles.Add(i + 3);
+
+				triangles.Add(i + 2);
+				triangles.Add(i + 8);
+				triangles.Add(i + 15);
+
+				triangles.Add(i + 3);
+				triangles.Add(i + 16);
+				triangles.Add(i + 9);
+
+				triangles.Add(i + 3);
+				triangles.Add(i + 17);
+				triangles.Add(i + 18);
+
+				triangles.Add(i + 3);
+				triangles.Add(i + 18);
+				triangles.Add(i + 4);
+
+				triangles.Add(i + 3);
+				triangles.Add(i + 9);
+				triangles.Add(i + 17);
+
+				triangles.Add(i + 4);
+				triangles.Add(i + 18);
+				triangles.Add(i + 10);
+
+				triangles.Add(i + 4);
+				triangles.Add(i + 19);
+				triangles.Add(i + 20);
+
+				triangles.Add(i + 4);
+				triangles.Add(i + 20);
+				triangles.Add(i + 5);
+
+				triangles.Add(i + 4);
+				triangles.Add(i + 10);
+				triangles.Add(i + 19);
+
+				triangles.Add(i + 5);
+				triangles.Add(i + 20);
+				triangles.Add(i + 11);
+
+				triangles.Add(i + 5);
+				triangles.Add(i + 21);
+				triangles.Add(i + 22);
+
+				triangles.Add(i + 5);
+				triangles.Add(i + 22);
+				triangles.Add(i + 6);
+
+				triangles.Add(i + 5);
+				triangles.Add(i + 11);
+				triangles.Add(i + 21);
+
+				triangles.Add(i + 6);
+				triangles.Add(i + 22);
+				triangles.Add(i + 12);
+
+				triangles.Add(i + 6);
+				triangles.Add(i + 23);
+				triangles.Add(i + 24);
+
+				triangles.Add(i + 6);
+				triangles.Add(i + 24);
+				triangles.Add(i + 1);
+
+				triangles.Add(i + 6);
+				triangles.Add(i + 12);
+				triangles.Add(i + 23);
+
+				triangles.Add(i + 1);
+				triangles.Add(i + 24);
+				triangles.Add(i + 7);
 
 				int r = Random.Range(0,101);
 				int tileType = 0;
@@ -126,6 +359,8 @@ public class Chunk : MonoBehaviour
 				{
 					tileType = 0;
 					colors.Add(waterColor);
+
+					colors.Add(waterColor);
 					colors.Add(waterColor);
 					colors.Add(waterColor);
 
@@ -136,6 +371,8 @@ public class Chunk : MonoBehaviour
 				else if (perlinVal > 3.5f && perlinVal <= 7f)
 				{
 					tileType = 1;
+					colors.Add(grassColor);
+					
 					colors.Add(grassColor);
 					colors.Add(grassColor);
 					colors.Add(grassColor);
@@ -148,6 +385,8 @@ public class Chunk : MonoBehaviour
 				{
 					tileType = 2;
 					colors.Add(hillColor);
+					
+					colors.Add(hillColor);
 					colors.Add(hillColor);
 					colors.Add(hillColor);
 
@@ -158,6 +397,8 @@ public class Chunk : MonoBehaviour
 				else
 				{
 					tileType = 3;
+					colors.Add(mountainColor);
+					
 					colors.Add(mountainColor);
 					colors.Add(mountainColor);
 					colors.Add(mountainColor);
@@ -185,9 +426,9 @@ public class Chunk : MonoBehaviour
 			//y++;
 		}
 
-		mesh.subMeshCount = 2;
+		//mesh.subMeshCount = 2;
 		mesh.vertices = vertices.ToArray();
-		mesh.colors = colors.ToArray();
+		//mesh.colors = colors.ToArray();
 		mesh.triangles = triangles.ToArray();
 		//mesh.SetTriangles(triangles, 0);
 		//mesh.SetTriangles(triangles, 1);
