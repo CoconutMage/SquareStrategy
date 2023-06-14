@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Data : MonoBehaviour
 {
@@ -188,7 +187,7 @@ public class Data : MonoBehaviour
 
 	public void PopulateChunkTileData(int r, int chunkIndex, int i, Vector2 pos, string material)
 	{
-		if (r == 0)
+		if (r == 0 || r == 2)
 		{
 			map[chunkIndex].tiles[i] = new Tile(chunkIndex, i, pos, material, cities["Moscow"],
 				Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
@@ -201,6 +200,15 @@ public class Data : MonoBehaviour
 			);
 
 		}
+		/*
+		else if (r == 2)
+		{
+			map[chunkIndex].tiles[i] = new WaterTile(chunkIndex, i, pos, material,
+				Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
+			);
+
+		}
+		*/
 	}
 
 	public struct Chunk
@@ -226,15 +234,16 @@ public class Data : MonoBehaviour
 		public Vector2 coordinates;
 		public string tileType;
 
-		public Data.City city;
+		public City city;
 		public Dictionary<string, int> resources;
 
+		public Dictionary<int, UnitData.ArmoredUnit> landArmoredUnits;
 		public Dictionary<string, int> landUnits;
 		public Dictionary<string, int> airUnits;
 
 		public Dictionary<string, int> tileBuildings;
 
-		public Tile(int aa, int ab, Vector2 ac, string ad, Data.City ae, int r1, int r2, int r3, int r4, int r5)
+		public Tile(int aa, int ab, Vector2 ac, string ad, City ae, int r1, int r2, int r3, int r4, int r5)
 		{
 			#region Immutable Data
 			//Tile Info
@@ -251,6 +260,7 @@ public class Data : MonoBehaviour
 			#endregion
 
 			#region Mutable
+			landArmoredUnits = new Dictionary<int, UnitData.ArmoredUnit> { };
 			landUnits = new Dictionary<string, int> { { "M1 Abrams Main Battle Tank", r1 }, { "Infantry", r2 }, { "Howitzer", r3 }, { "Railway Gun", r4 } };
 			airUnits = new Dictionary<string, int> { { "Enemy AC130 Above!", r1 }, { "Fairchild Republic A-10 Thunderbolt II", r2 }, { "F-22", r3 }, { "F-35", r4 } };
 
