@@ -2830,8 +2830,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   xSize: 7
   ySize: 3
-  chunkXSize: 8
-  chunkYSize: 8
+  chunkXSize: 10
+  chunkYSize: 10
   chunkIndex: 0
   chunkPrefab: {fileID: 1964846242441901576, guid: 640a6a4074d21d8468ed0831b4fdc4ee, type: 3}
   noiseOffsetX: 0
