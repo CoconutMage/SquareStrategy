@@ -146,6 +146,8 @@ public class Map : MonoBehaviour
 						//Debug.Log("Perlin: " + Mathf.PerlinNoise(x / (float)xSize, y / (float)ySize));
 						//Debug.Log("Index: " + chunkIndex + " : " + x + " : " + (xSize * (chunkIndex % map.xSize)) * (offsetSide + offsetEdge) + " : " + (float)(xSize * map.xSize * (offsetSide + offsetEdge)));
 
+						//--------------------------------------------------------------------------------------------------------------------------- I think these cords are wrong
+
 						//These numbers I pulled out of my ass, so edit for your pleasure. Except for coords and map size, dont edit those
 						float xCord = x + (chunkXSize * (chunkIndex % xSize) * (offsetSide + offsetEdge)), yCord = y + (chunkYSize * (chunkIndex / xSize) * height);
 						float mapSizeX = (float)(chunkXSize * xSize * (offsetSide + offsetEdge)), mapSizeY = (float)(chunkYSize * ySize * height);
@@ -221,9 +223,9 @@ public class Map : MonoBehaviour
 				for (int i = 0, ti = 0, index = 0; y < chunkYSize; y++)
 				{
 					colNum = 0;
-					for (x = 0; colNum < chunkXSize; x += offsetSide + offsetEdge, i += 25, ti += 12, index++)
+					for (x = 0; colNum < chunkXSize; x += /*offsetSide + offsetEdge*/ 1, i += 25, ti += 12, index++)
 					{
-						if (colNum % 2 != 0) y += (0.5f * height);
+						//if (colNum % 2 != 0) y += (0.5f * height);
 
 						int r = Random.Range(0, 101);
 						string tileType = "";
@@ -232,10 +234,9 @@ public class Map : MonoBehaviour
 						//Debug.Log("Index: " + chunkIndex + " : " + x + " : " + (xSize * (chunkIndex % map.xSize)) * (offsetSide + offsetEdge) + " : " + (float)(xSize * map.xSize * (offsetSide + offsetEdge)));
 
 						//These numbers I pulled out of my ass, so edit for your pleasure. Except for coords and map size, dont edit those
-						float xCord = x + (chunkXSize * (chunkIndex % xSize) * (offsetSide + offsetEdge)), yCord = y + (chunkYSize * (chunkIndex / xSize) * height);
+						float xCord = x + (chunkXSize * (chunkIndex % xSize))/* * (offsetSide + offsetEdge))*/, yCord = y + (chunkYSize * (chunkIndex / xSize)/* * height*/);
 
-						Debug.Log("XCord: " + xCord);
-						Debug.Log("YCord: " + yCord);
+						Debug.Log("XCord: " + (x + (chunkXSize * (chunkIndex % xSize))) + " : " + (y + (chunkYSize * (chunkIndex / xSize))));
 
 						if (emv.tiles[(int)xCord, (int)yCord] == 16) tileType = "water";
 						else if (emv.tiles[(int)xCord, (int)yCord] == 15) tileType = "coast";
@@ -253,7 +254,7 @@ public class Map : MonoBehaviour
 						else if (emv.tiles[(int)xCord, (int)yCord] == 3) tileType = "forest";
 						else tileType = "grass";
 
-						if (colNum % 2 != 0) y -= (0.5f * height);
+						//if (colNum % 2 != 0) y -= (0.5f * height);
 
 						data.PopulateChunkTileData(0, chunkIndex, index, new Vector2(0, 0), tileType);
 						//mapData.PopulateChunkTileData(r, chunkIndex, index, new Vector2(0, 0), "Stone");
