@@ -67,8 +67,12 @@ public class Chunk : MonoBehaviour
 
 		Dictionary<string, Color> colorDict = new Dictionary<string, Color>();
 		colorDict["water"] = Color.blue;
+		colorDict["coast"] = new Color32(51, 196, 255, 255);
+		colorDict["snow"] = new Color32(185, 235, 255, 255);
+		colorDict["tundra"] = new Color32(180, 184, 205, 255);
+		colorDict["desert"] = new Color32(223, 197, 76, 255);
 		colorDict["grass"] = Color.green;
-		colorDict["hill"] = new Color(0.3f, 0.3f, 0.3f);
+		colorDict["forest"] = new Color32(73, 156, 42, 255);
 		colorDict["mountain"] = Color.gray;
 
 		for (int i = 0, ti = 0, index = 0; y < ySize; y++)

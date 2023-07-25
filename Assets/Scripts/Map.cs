@@ -32,7 +32,8 @@ public class Map : MonoBehaviour
 		noiseOffsetY = Random.Range(0, 9999);
 
 		//PerlinGenerate();
-		Generate();
+		//Generate();
+		ReadMap();
 	}
 
 	void Generate()
@@ -113,13 +114,12 @@ public class Map : MonoBehaviour
 			}
 		}
 	}
-
 	void PerlinGenerate()
 	{
 		float height = 1;
-		   //The length of one flat side
+		//The length of one flat side
 		float offsetSide = (height / Mathf.Tan(60 * Mathf.Deg2Rad));
-		   //The x length of the angled side on the left and right edges
+		//The x length of the angled side on the left and right edges
 		float offsetEdge = (height * 0.5f) * Mathf.Tan(30 * Mathf.Deg2Rad);
 
 		for (int w = 0; w < ySize; w++)
@@ -178,6 +178,80 @@ public class Map : MonoBehaviour
 						else if (perlinVal > 3.5f && perlinVal <= 7f) tileType = "grass";
 						else if (perlinVal > 7f && perlinVal <= 8.75f) tileType = "hill";
 						else tileType = "mountain";
+
+						if (colNum % 2 != 0) y -= (0.5f * height);
+
+						data.PopulateChunkTileData(0, chunkIndex, index, new Vector2(0, 0), tileType);
+						//mapData.PopulateChunkTileData(r, chunkIndex, index, new Vector2(0, 0), "Stone");
+						colNum++;
+					}
+				}
+
+				//Physical Characteristics
+				GameObject chunk = Instantiate(chunkPrefab);
+				chunk.transform.parent = transform;
+				chunk.transform.localPosition = chunkPos;
+
+				//Data Management
+				chunkScript = chunk.GetComponent<Chunk>();
+				chunkScript.chunkIndex = chunkIndex;
+				chunkScript.chunkPosition = chunkPos;
+			}
+		}
+	}
+	void ReadMap()
+	{
+		float height = 1;
+		//The length of one flat side
+		float offsetSide = (height / Mathf.Tan(60 * Mathf.Deg2Rad));
+		//The x length of the angled side on the left and right edges
+		float offsetEdge = (height * 0.5f) * Mathf.Tan(30 * Mathf.Deg2Rad);
+
+		for (int w = 0; w < ySize; w++)
+		{
+			for (int z = 0; z < xSize; z++, chunkIndex++)
+			{
+				Vector2 chunkPos = new Vector2(z * chunkXSize * (offsetSide + offsetEdge), w * chunkYSize * height);
+				data.PopulateChunkData(chunkIndex, chunkPos);
+
+				float y = 0;
+				float x;
+				float colNum = 0;
+
+				for (int i = 0, ti = 0, index = 0; y < chunkYSize; y++)
+				{
+					colNum = 0;
+					for (x = 0; colNum < chunkXSize; x += offsetSide + offsetEdge, i += 25, ti += 12, index++)
+					{
+						if (colNum % 2 != 0) y += (0.5f * height);
+
+						int r = Random.Range(0, 101);
+						string tileType = "";
+
+						//Debug.Log("Perlin: " + Mathf.PerlinNoise(x / (float)xSize, y / (float)ySize));
+						//Debug.Log("Index: " + chunkIndex + " : " + x + " : " + (xSize * (chunkIndex % map.xSize)) * (offsetSide + offsetEdge) + " : " + (float)(xSize * map.xSize * (offsetSide + offsetEdge)));
+
+						//These numbers I pulled out of my ass, so edit for your pleasure. Except for coords and map size, dont edit those
+						float xCord = x + (chunkXSize * (chunkIndex % xSize) * (offsetSide + offsetEdge)), yCord = y + (chunkYSize * (chunkIndex / xSize) * height);
+
+						Debug.Log("XCord: " + xCord);
+						Debug.Log("YCord: " + yCord);
+
+						if (emv.tiles[(int)xCord, (int)yCord] == 16) tileType = "water";
+						else if (emv.tiles[(int)xCord, (int)yCord] == 15) tileType = "coast";
+						else if (emv.tiles[(int)xCord, (int)yCord] == 14) tileType = "snow";
+						else if (emv.tiles[(int)xCord, (int)yCord] == 13) tileType = "snow";
+						else if (emv.tiles[(int)xCord, (int)yCord] == 12) tileType = "snow";
+						else if (emv.tiles[(int)xCord, (int)yCord] == 11) tileType = "tundra";
+						else if (emv.tiles[(int)xCord, (int)yCord] == 10) tileType = "tundra";
+						else if (emv.tiles[(int)xCord, (int)yCord] == 9) tileType = "tundra";
+						else if (emv.tiles[(int)xCord, (int)yCord] == 8) tileType = "desert";
+						else if (emv.tiles[(int)xCord, (int)yCord] == 7) tileType = "desert";
+						else if (emv.tiles[(int)xCord, (int)yCord] == 6) tileType = "desert";
+						else if (emv.tiles[(int)xCord, (int)yCord] == 5) tileType = "forest";
+						else if (emv.tiles[(int)xCord, (int)yCord] == 4) tileType = "forest";
+						else if (emv.tiles[(int)xCord, (int)yCord] == 3) tileType = "forest";
+						else tileType = "grass";
 
 						if (colNum % 2 != 0) y -= (0.5f * height);
 
