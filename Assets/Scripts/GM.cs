@@ -4,6 +4,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 
+//using static Data;
+//Is this a problem?
+
+//A lot of this code is leftover from space game and I haven't gotten rid of most of it in case it comes in handy
+
 public class GM : MonoBehaviour
 {
 	public static GM Instance { get; private set; }
@@ -21,6 +26,9 @@ public class GM : MonoBehaviour
 	public TMP_Text dateText;
 
 	public TMP_Text researchText;
+
+	//public Dictionary<> players
+	//struct players
 
 	readonly string[] months = new string[]
 	{
@@ -141,6 +149,7 @@ public class GM : MonoBehaviour
 	}
 	*/
 
+	//this needs to have hours added to it but it works for now
 	void TickCalendar()
 	{
 		//Debug.Log(DateTime.Now.Millisecond);
@@ -149,6 +158,7 @@ public class GM : MonoBehaviour
 		monthDays++;
 		totalDays++;
 
+		//Leap year calculation and addition of leap day
 		if (year % 4 == 0 && month == 1)
 		{
 			if (monthDays > daysInMonth[month] + 1)

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using static Data;
 
 public class UnitData : MonoBehaviour
 {
@@ -69,6 +68,21 @@ public class UnitData : MonoBehaviour
 			speed = ae;
 			gun = af;
 			reliability = ag;
+		}
+	}
+
+	public struct Ship
+	{
+		public string name;
+
+		public int tonnage;
+
+
+		public Ship(string aa)
+		{
+			name = aa;
+
+			tonnage = 0;
 		}
 	}
 }

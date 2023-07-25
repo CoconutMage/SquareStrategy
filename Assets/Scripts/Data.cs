@@ -3,10 +3,15 @@ using UnityEngine;
 
 public class Data : MonoBehaviour
 {
+	//This data script is an absolute fucking mess, partly because its a work and progress, and partly because
+	//I don't know what the fuck I'm doing and shouldn't be allowed anywhere near a serious data structure
 	public static Data Instance { get; private set; }
 
+	//these are static because otherwise it gets angry, if they can be made so they can not be static, that might be better but this works for now
+	public static Player nullPlayer = new Player(-1, "Null", -1, nullCountry);
+	//
 	public static Country nullCountry = new Country(-1, "Null", -1, nullLeader);
-	public static Leader nullLeader = new Leader("Null", null, "Null", -1, "Null");
+	public static Leader nullLeader = new Leader("Null", null, "Null", "Null");
 	public static City nullCity = new City("Null", nullCountry, -1);
 
 	public Tile nullTile = new(-1, -1, new Vector2(0, 0), "Null", nullCity, -1, -1, -1, -1, -1);
@@ -40,13 +45,48 @@ public class Data : MonoBehaviour
 		AddData();
 	}
 
+	public Player[] players = new Player[8];
+	int playerCreationIndex;
+	public struct Player
+	{
+		public int id;
+		public string name;
+
+		public int politicalPower;
+
+		public Country country;
+
+		public Player(int i, string aa, int pp, Country ab)
+		{
+			id = i;
+			name = aa;
+
+			politicalPower = pp;
+
+			country = ab;
+		}
+	}
+
+	public void CreatePlayerCountry(string name /*Leader leader*/)
+	{
+		countries[name] = new Country(0, name, 0, leaders["John Moses Browning"]);
+		Country c = countries[name];
+		Debug.Log("NEW COUNTRY: ID: " + c.countryID + ", NAME: " + c.name + ", LEADER NAME: " + c.leader.name);
+	}
+
+	public void CreatePlayer(string playerName, Country playerCountry)
+	{
+		players[playerCreationIndex] = new Player(playerCreationIndex, playerName, 0,playerCountry);
+		playerCreationIndex++;
+	}
+
 	void AddData()
 	{
 		leaderImages["Stalin"] = Resources.Load<Sprite>("Pictures/Stalin");
 		leaderImages["Wojtek"] = Resources.Load<Sprite>("Pictures/Wojtek");
 
-		leaders["John Moses Browning"] = new Leader("John Moses Browning", leaderImages["Wojtek"], "God of Guns", 99999, "More Gun");
-		leaders["Stalin"] = new Leader("Stalin", leaderImages["Stalin"], "The King of Starvation", 0, "Communist");
+		leaders["John Moses Browning"] = new Leader("John Moses Browning", leaderImages["Wojtek"], "God of Guns", "More Gun");
+		leaders["Stalin"] = new Leader("Stalin", leaderImages["Stalin"], "The King of Starvation", "Communist");
 
 		countries["USA"] = new Country(0, "The United States of America", 333287557, leaders["John Moses Browning"]);
 		countries["USSR"] = new Country(0, "USSR", 0, leaders["Stalin"]);
@@ -55,7 +95,7 @@ public class Data : MonoBehaviour
 		cities["WashingtonDC"] = new City("Washington D.C.", countries["USA"], 689545);
 	}
 
-
+	//This struct also needs some method of storing the tiles a country owns as well as what cities it has and what tiles they're in
 	public struct Country
 	{
 		public int countryID;
@@ -70,6 +110,7 @@ public class Data : MonoBehaviour
 		public int airForceUnitAmount;
 		public int navalUnitAmount;
 
+		//These will almost likely get reworked into structs as well
 		public Dictionary<string, int> resources;
 		public Dictionary<string, int> army;
 		public Dictionary<string, int> airForce;
@@ -146,18 +187,15 @@ public class Data : MonoBehaviour
 
 		public string title;
 
-		public int politicalPower;
 
 		public string politicalParty;
 		public int termsServed;
 
-		public Leader(string aa, Sprite image, string ab, int pp, string ac)
+		public Leader(string aa, Sprite image, string ab, string ac)
 		{
 			name = aa;
 			leaderImage = image;
 			title = ab;
-
-			politicalPower = pp;
 
 			politicalParty = ac;
 			termsServed = 0;

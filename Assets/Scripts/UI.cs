@@ -28,7 +28,8 @@ public class UI : MonoBehaviour
 
 	public Image leaderImage;
 
-	public Country playerCountry = Data.nullCountry;
+	public Player playerOne = Data.nullPlayer;
+
 
 	public static UI Instance { get; private set; }
 	void Awake()
@@ -41,14 +42,13 @@ public class UI : MonoBehaviour
 		Instance = this;
 	}
 
-
 	void Start()
 	{
 		data = Data.Instance;
 		uData = UnitData.Instance;
 		cam = CameraController.Instance;
 
-		playerCountry = data.countries["USA"];
+		playerOne.country = data.countries["USA"];
 		UpdateResourceBar();
 
 		leaderImage.sprite = null;
@@ -56,18 +56,18 @@ public class UI : MonoBehaviour
 
 	public void UpdateResourceBar()
 	{
-		politicalPower.text = playerCountry.leader.politicalPower.ToString();
+		politicalPower.text = playerOne.politicalPower.ToString();
 	}
 
 	public void PoliticalPanelButton()
 	{
-		if (politicalPanelOut && !displayingCountry.Equals(playerCountry))
+		if (politicalPanelOut && !displayingCountry.Equals(playerOne.country))
 		{
-			UpdatePoliticalPanel(playerCountry);
+			UpdatePoliticalPanel(playerOne.country);
 		}
 		else
 		{
-			UpdatePoliticalPanel(playerCountry);
+			UpdatePoliticalPanel(playerOne.country);
 			StartCoroutine(PoliticalPanelTransition());
 		}
 	}
@@ -87,6 +87,8 @@ public class UI : MonoBehaviour
 	int s = 0;
 	int g = 0;
 	int r = 0;
+	//This is a super work in progress/proof of concept combined with an experiment to see if I could make all the buttons in a menu use one function, which
+	//doesn't cause any issues at the moment (even though it looks awful) but if it does or it's decided it needs to be changed, I will do so myself
 	public void TankDesignerButtonHandler(int i)
 	{
 		switch (i)
@@ -189,7 +191,7 @@ public class UI : MonoBehaviour
 
 	void UpdatePoliticalPanel(Country country)
 	{
-		if (!country.Equals(Data.nullCountry) || !country.Equals(playerCountry))
+		if (!country.Equals(Data.nullCountry) || !country.Equals(playerOne.country))
 		{
 			displayingCountry = country;
 			leaderName.text = country.leader.name;
@@ -198,9 +200,9 @@ public class UI : MonoBehaviour
 		}
 		else
 		{
-			displayingCountry = playerCountry;
-			leaderName.text = playerCountry.leader.name;
-			countryText.text = playerCountry.name;
+			displayingCountry = playerOne.country;
+			leaderName.text = playerOne.country.leader.name;
+			countryText.text = playerOne.country.name;
 			leaderImage.sprite = country.leader.leaderImage;
 		}
 	}

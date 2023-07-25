@@ -58,7 +58,7 @@ public class Chunk : MonoBehaviour
 		   //The x length of the angled side on the left and right edges
 		float offsetEdge = (height * 0.5f) * Mathf.Tan(30 * Mathf.Deg2Rad);
 
-		float blendRegion = 0.20f;
+		float blendRegion = 0.1f;
 
 		Color grassColor = Color.green;
 		Color hillColor = new Color(0.3f, 0.3f, 0.3f);

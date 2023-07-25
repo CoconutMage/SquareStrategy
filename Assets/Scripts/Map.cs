@@ -11,6 +11,7 @@ public class Map : MonoBehaviour
 
 	Data data;
 	Chunk chunkScript;
+	EarthMapValues emv;
 	public float noiseOffsetX, noiseOffsetY;
 
 
@@ -25,14 +26,95 @@ public class Map : MonoBehaviour
 		Instance = this;
 
 		data = Data.Instance;
+		emv = EarthMapValues.Instance;
 
 		noiseOffsetX = Random.Range(0, 9999);
 		noiseOffsetY = Random.Range(0, 9999);
 
+		//PerlinGenerate();
 		Generate();
 	}
 
 	void Generate()
+	{
+		float height = 1;
+		//The length of one flat side
+		float offsetSide = (height / Mathf.Tan(60 * Mathf.Deg2Rad));
+		//The x length of the angled side on the left and right edges
+		float offsetEdge = (height * 0.5f) * Mathf.Tan(30 * Mathf.Deg2Rad);
+
+		for (int w = 0; w < 16/*64*/; w++)
+		{
+			for (int z = 0; z < 32/*104*/; z++, chunkIndex++)
+			{
+				Vector2 chunkPos = new Vector2(z * chunkXSize * (offsetSide + offsetEdge), w * chunkYSize * height);
+				data.PopulateChunkData(chunkIndex, chunkPos);
+
+				float y = 0;
+				float x;
+				float colNum = 0;
+
+				for (int i = 0, ti = 0, index = 0; y < chunkYSize; y++)
+				{
+					colNum = 0;
+					for (x = 0; colNum < chunkXSize; x += offsetSide + offsetEdge, i += 25, ti += 12, index++)
+					{
+						if (colNum % 2 != 0) y += (0.5f * height);
+						string tileType = "";
+
+						if (emv.tiles[z, w] == 16)
+						{
+							tileType = "water";
+						}
+						if (emv.tiles[z, w] == 15)
+						{
+							tileType = "mountain";
+						}
+						if (emv.tiles[z, w] == 14)
+						{
+							tileType = "hill";
+						}
+						else
+						{
+							int r = Random.Range(0,4);
+							switch (r)
+							{
+								case 0:
+									tileType = "grass";
+									break;
+								case 1:
+									tileType = "water";
+									break;
+								case 2:
+									tileType = "mountain";
+									break;
+								case 3:
+									tileType = "hill";
+									break;
+							}
+						}
+
+						if (colNum % 2 != 0) y -= (0.5f * height);
+
+						data.PopulateChunkTileData(0, chunkIndex, index, new Vector2(0, 0), tileType);
+						colNum++;
+					}
+				}
+
+				//Physical Characteristics
+				GameObject chunk = Instantiate(chunkPrefab);
+				chunk.transform.parent = transform;
+				chunk.transform.localPosition = chunkPos;
+
+				//Data Management
+				chunkScript = chunk.GetComponent<Chunk>();
+				chunkScript.chunkIndex = chunkIndex;
+				chunkScript.chunkPosition = chunkPos;
+			}
+		}
+	}
+
+	void PerlinGenerate()
 	{
 		float height = 1;
 		   //The length of one flat side
