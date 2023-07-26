@@ -21,6 +21,8 @@ public class CameraController : MonoBehaviour
 	public GameObject map;
 	Vector3 offset;
 
+	public GameObject selectedTileIndicator;
+	public GameObject selectedTilePrefab;
 	void Start()
 	{
 		if (Instance != null && Instance != this)
@@ -56,15 +58,12 @@ public class CameraController : MonoBehaviour
 	{
 		if (Input.GetMouseButtonDown(0))
 		{
-			/*currentTile = InteractWithMesh(data);
-			if (currentTile.tile.tileType == "Stone")
-			{
-				SetTileUVs(currentTile, "Grass");
-			}
-			else if (currentTile.tile.tileType == "Grass" || currentTile.tile.tileType == "Selected_Tile")
-			{
-				SetTileUVs(currentTile, "Stone");
-			}*/
+			currentTile = InteractWithMesh(data);
+			Debug.Log("Tile Clicked: " + currentTile.tileIndex);
+			if (selectedTileIndicator != null) Destroy(selectedTileIndicator);
+			selectedTileIndicator = Instantiate(selectedTilePrefab, currentTile.meshRenderer.transform);
+			Debug.Log("Pos: " + ((selectedTileIndicator.GetComponent<SelectedTileUI>().height * 0.5f) * currentTile.tileIndex % 2));
+			selectedTileIndicator.transform.localPosition = new Vector3((currentTile.tileIndex % map.GetComponent<Map>().chunkXSize) * (selectedTileIndicator.GetComponent<SelectedTileUI>().offsetSide + selectedTileIndicator.GetComponent<SelectedTileUI>().offsetEdge), Mathf.FloorToInt(currentTile.tileIndex / map.GetComponent<Map>().chunkXSize) + ((selectedTileIndicator.GetComponent<SelectedTileUI>().height * 0.5f) * (currentTile.tileIndex % 2)), -1);
 		}
 	}
 
@@ -222,6 +221,7 @@ public class CameraController : MonoBehaviour
 		public int tileIndex;
 		public int chunkIndex;
 		public Data.Tile tile;
+		public Chunk chunk;
 	}
 
 	public static MeshInteractionResult InteractWithMesh(Data data)
@@ -236,6 +236,7 @@ public class CameraController : MonoBehaviour
 		int tileIndex = -1;
 		int chunkIndex = -1;
 		Data.Tile tile = data.nullTile;
+		Chunk chunk = null;
 
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -247,25 +248,17 @@ public class CameraController : MonoBehaviour
 				mesh = meshCollider.sharedMesh;
 				meshRenderer = meshCollider.gameObject.GetComponent<MeshRenderer>();
 				meshUVs = mesh.uv;
+
 				triangles = mesh.triangles;
 				triangleIndex = hit.triangleIndex;
-				//Debug.Log("Triangle Index: " + triangleIndex);
+				int numTriangles = 30;
 
-				if (triangleIndex < triangles.Length / 3)
-				{
-					uvIndex = (triangleIndex / 4) * 6;//triangles[triangleIndex * 3];
-					hitUVCoords = meshUVs[uvIndex];
+				tileIndex = triangleIndex / numTriangles;
+				chunk = hit.transform.gameObject.GetComponent<Chunk>();
+				chunkIndex = chunk.chunkIndex;
 
-					tileIndex = uvIndex / 6;
-					//Debug.Log("Tile Index: " + tileIndex);
-					//Debug.Log("UV Index: " + uvIndex);
-					chunkIndex = hit.transform.gameObject.GetComponent<Chunk>().chunkIndex;
-
-					Dictionary<int, Data.Tile> tiles = data.map[chunkIndex].tiles;
-					tile = tiles[tileIndex];
-
-					//Debug.Log("===========================================================================================");
-				}
+				Dictionary<int, Data.Tile> tiles = data.map[chunkIndex].tiles;
+				tile = tiles[tileIndex];
 			}
 		}
 
