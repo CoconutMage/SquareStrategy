@@ -2797,6 +2797,8 @@ MonoBehaviour:
   canZoom: 0
   difference: {x: 0, y: 0, z: 0}
   map: {fileID: 553007773}
+  selectedTileIndicator: {fileID: 0}
+  selectedTilePrefab: {fileID: 7925709008664219514, guid: 5a7f2b4a06325c44eb81bad601f17a85, type: 3}
 --- !u!1 &553007773
 GameObject:
   m_ObjectHideFlags: 0
