@@ -46,8 +46,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ff3620bbb1a2824e963c879bb171abb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chunkIndex: 0
-  chunkPosition: {x: 0, y: 0}
+  height: 1
+  offsetSide: 0
+  offsetEdge: 0
 --- !u!33 &7322572985804576707
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -76,7 +77,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 8c73233f9374fab4383472c7915ddab5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

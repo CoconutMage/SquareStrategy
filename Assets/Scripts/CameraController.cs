@@ -59,15 +59,18 @@ public class CameraController : MonoBehaviour
 		if (Input.GetMouseButtonDown(0))
 		{
 			currentTile = InteractWithMesh(data);
-			Debug.Log("Tile Clicked: " + currentTile.tileIndex);
-			if (selectedTileIndicator != null) Destroy(selectedTileIndicator);
-			selectedTileIndicator = Instantiate(selectedTilePrefab, currentTile.meshRenderer.transform);
-			Debug.Log("Pos: " + ((selectedTileIndicator.GetComponent<SelectedTileUI>().height * 0.5f) * currentTile.tileIndex % 2));
-			selectedTileIndicator.transform.localPosition = new Vector3((currentTile.tileIndex % map.GetComponent<Map>().chunkXSize) * (selectedTileIndicator.GetComponent<SelectedTileUI>().offsetSide + selectedTileIndicator.GetComponent<SelectedTileUI>().offsetEdge), Mathf.FloorToInt(currentTile.tileIndex / map.GetComponent<Map>().chunkXSize) + ((selectedTileIndicator.GetComponent<SelectedTileUI>().height * 0.5f) * (currentTile.tileIndex % 2)), -1);
+			SetSelectedTileIndicator(currentTile);
 		}
 	}
+	public void SetSelectedTileIndicator(MeshInteractionResult currentTile)
+    {
+		Debug.Log("Tile Clicked: " + currentTile.tileIndex);
+		if (selectedTileIndicator != null) Destroy(selectedTileIndicator);
+		selectedTileIndicator = Instantiate(selectedTilePrefab, currentTile.meshRenderer.transform);
+		Debug.Log("Pos: " + ((selectedTileIndicator.GetComponent<SelectedTileUI>().height * 0.5f) * currentTile.tileIndex % 2));
+		selectedTileIndicator.transform.localPosition = new Vector3((currentTile.tileIndex % map.GetComponent<Map>().chunkXSize) * (selectedTileIndicator.GetComponent<SelectedTileUI>().offsetSide + selectedTileIndicator.GetComponent<SelectedTileUI>().offsetEdge), Mathf.FloorToInt(currentTile.tileIndex / map.GetComponent<Map>().chunkXSize) + ((selectedTileIndicator.GetComponent<SelectedTileUI>().height * 0.5f) * (currentTile.tileIndex % 2)), -1);
+	}
 
-	MeshInteractionResult previousTile;
 	MeshInteractionResult currentTile;
 	void RightClick()
 	{
@@ -75,14 +78,7 @@ public class CameraController : MonoBehaviour
 		{
 			currentTile = InteractWithMesh(data);
 			if (currentTile.mesh == null) return;
-
-			if (previousTile.mesh != null)
-			{
-				SetTileUVs(previousTile, "Empty");
-			}
-			SetTileUVs(currentTile, "Selected_Tile");
-			//SetTriangleHighlight(currentTile, "Selected_Tile");
-			previousTile = currentTile;
+			SetSelectedTileIndicator(currentTile);
 
 			ui.PoliticalPanelHandler(currentTile.tile.city.parentCountry);
 
