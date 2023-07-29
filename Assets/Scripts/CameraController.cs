@@ -152,66 +152,6 @@ public class CameraController : MonoBehaviour
 			}
 		}
 	}
-
-	void SetTileUVs(MeshInteractionResult tileToSet, string tileType)
-	{
-		Vector2[] tempMeshUVs = tileToSet.mesh.uv;
-
-		/*float oneX = 18f, twoX = 1f, threeX = 18f, fourX = 53f, fiveX = 70.5f, sixX = 53f;
-		float oneY = 2f, twoY = 32f, threeY = 62f, fourY = 62f, fiveY = 32f, sixY = 2f;
-		//float sizeX = 72, sizeY = 63;
-		float sizeX = 288, sizeY = 256;
-		//float modifierX = -0.5f, modifierY = 0.5f;
-		float modifierX = -0.5f, modifierY = 0.5f;
-		int textureIndexX = 1, textureIndexY = 1;
-		modifierX -= 72;
-
-		tempMeshUVs[tileToSet.uvIndex] = new Vector2(((oneX - modifierX) / sizeX) * textureIndexX, ((oneY - modifierY) / sizeY) * textureIndexY);
-		tempMeshUVs[tileToSet.uvIndex + 1] = new Vector2(((twoX - modifierX) / sizeX) * textureIndexX, ((twoY - modifierY) / sizeY) * textureIndexY);
-		tempMeshUVs[tileToSet.uvIndex + 2] = new Vector2(((threeX - modifierX) / sizeX) * textureIndexX, ((threeY - modifierY) / sizeY) * textureIndexY);
-		tempMeshUVs[tileToSet.uvIndex + 3] = new Vector2(((fourX - modifierX) / sizeX) * textureIndexX, ((fourY - modifierY) / sizeY) * textureIndexY);
-		tempMeshUVs[tileToSet.uvIndex + 4] = new Vector2(((fiveX - modifierX) / sizeX) * textureIndexX, ((fiveY - modifierY) / sizeY) * textureIndexY);
-		tempMeshUVs[tileToSet.uvIndex + 5] = new Vector2(((sixX - modifierX) / sizeX) * textureIndexX, ((sixY - modifierY) / sizeY) * textureIndexY);
-
-		tileToSet.mesh.uv = tempMeshUVs;*/
-
-		if (tileType.Equals("Empty"))
-		{
-			int[] triangles = new int[12];
-
-			tileToSet.mesh.SetTriangles(triangles, 1);
-
-			tileToSet.tile.tileType = tileType;
-			data.map[tileToSet.chunkIndex].tiles[tileToSet.tileIndex] = tileToSet.tile;
-		}
-		else
-		{
-			int[] triangles = new int[12];
-			int ti = 0;
-			int i = tileToSet.tileIndex * 6;
-
-			triangles[ti] = i;
-			triangles[ti + 1] = i + 1;
-			triangles[ti + 2] = i + 2;
-
-			triangles[ti + 3] = i;
-			triangles[ti + 4] = i + 2;
-			triangles[ti + 5] = i + 5;
-
-			triangles[ti + 6] = i + 2;
-			triangles[ti + 7] = i + 4;
-			triangles[ti + 8] = i + 5;
-
-			triangles[ti + 9] = i + 2;
-			triangles[ti + 10] = i + 3;
-			triangles[ti + 11] = i + 4;
-
-			tileToSet.mesh.SetTriangles(triangles, 1);
-
-			tileToSet.tile.tileType = tileType;
-			data.map[tileToSet.chunkIndex].tiles[tileToSet.tileIndex] = tileToSet.tile;
-		}
-	}
 	/*private void SetTriangleHighlight(MeshInteractionResult tileToSet, string tileType)
 	{
 		MeshRenderer targetRenderer = tileToSet.meshRenderer;
