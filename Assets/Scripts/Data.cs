@@ -10,12 +10,12 @@ public class Data : MonoBehaviour
 	//these are static because otherwise it gets angry, if they can be made so they can not be static, that might be better but this works for now
 	public static Player nullPlayer = new Player(-1, "Null", -1, nullCountry);
 	//
-	public static Country nullCountry = new Country(-1, "Null", -1, nullLeader);
+	public static Country nullCountry = new Country(-1, "Null", "Null", -1, nullLeader);
 	public static Leader nullLeader = new Leader("Null", null, "Null", "Null");
-	public static City nullCity = new City("Null", nullCountry, -1);
+	public static City nullCity = new City(-1, "Null", nullCountry, -1);
 
-	public Tile nullTile = new(-1, -1, new Vector2(0, 0), "Null", nullCity, -1, -1, -1, -1, -1);
-	public Tile nullWaterTile = new(-1, -1, new Vector2(0, 0), "Null", nullCity, -1, -1, -1, -1, -1);
+	public Tile nullTile = new(-1, -1, new Vector2(0, 0), "Null", nullCountry, nullCity, -1, -1, -1, -1, -1);
+	public Tile nullWaterTile = new(-1, -1, new Vector2(0, 0), "Null", nullCountry, nullCity, -1, -1, -1, -1, -1);
 
 	public Dictionary<int, Chunk> map;
 
@@ -24,6 +24,8 @@ public class Data : MonoBehaviour
 	public Dictionary<string, Leader> leaders;
 
 	public Dictionary<string, Sprite> leaderImages;
+
+	public bool mapEditorScene;
 
 	private void Awake()
 	{
@@ -42,7 +44,25 @@ public class Data : MonoBehaviour
 		cities = new Dictionary<string, City>();
 
 		leaderImages = new Dictionary<string, Sprite>();
-		AddData();
+
+		//Temp Data
+		leaderImages["Stalin"] = Resources.Load<Sprite>("Pictures/Stalin");
+		leaderImages["Wojtek"] = Resources.Load<Sprite>("Pictures/Wojtek");
+
+		leaders["Dwight D. Eisenhower"] = new Leader("Dwight D. Eisenhower", leaderImages["Wojtek"], "Big D", "Not Communist");
+		leaders["Stalin"] = new Leader("Stalin", leaderImages["Stalin"], "The King of Starvation", "Communist");
+
+		countries["USA"] = new Country(0, "USA", "The United States of America", 333287557, leaders["Dwight D. Eisenhower"]);
+		countries["USSR"] = new Country(1, "USSR", "USSR", 0, leaders["Stalin"]);
+
+		cities["WashingtonDC"] = new City(0, "Washington D.C.", countries["USA"], 689545);
+		cities["Moscow"] = new City(1, "Moscow", countries["USSR"], 0);
+	}
+
+	public void CreatePlayer(string playerName, Country playerCountry)
+	{
+		players[playerCreationIndex] = new Player(playerCreationIndex, playerName, 0, playerCountry);
+		playerCreationIndex++;
 	}
 
 	public Player[] players = new Player[8];
@@ -67,38 +87,11 @@ public class Data : MonoBehaviour
 		}
 	}
 
-	public void CreatePlayerCountry(string name /*Leader leader*/)
-	{
-		countries[name] = new Country(0, name, 0, leaders["John Moses Browning"]);
-		Country c = countries[name];
-		Debug.Log("NEW COUNTRY: ID: " + c.countryID + ", NAME: " + c.name + ", LEADER NAME: " + c.leader.name);
-	}
-
-	public void CreatePlayer(string playerName, Country playerCountry)
-	{
-		players[playerCreationIndex] = new Player(playerCreationIndex, playerName, 0,playerCountry);
-		playerCreationIndex++;
-	}
-
-	void AddData()
-	{
-		leaderImages["Stalin"] = Resources.Load<Sprite>("Pictures/Stalin");
-		leaderImages["Wojtek"] = Resources.Load<Sprite>("Pictures/Wojtek");
-
-		leaders["John Moses Browning"] = new Leader("John Moses Browning", leaderImages["Wojtek"], "God of Guns", "More Gun");
-		leaders["Stalin"] = new Leader("Stalin", leaderImages["Stalin"], "The King of Starvation", "Communist");
-
-		countries["USA"] = new Country(0, "The United States of America", 333287557, leaders["John Moses Browning"]);
-		countries["USSR"] = new Country(0, "USSR", 0, leaders["Stalin"]);
-
-		cities["Moscow"] = new City("Moscow", countries["USSR"], 0);
-		cities["WashingtonDC"] = new City("Washington D.C.", countries["USA"], 689545);
-	}
-
 	//This struct also needs some method of storing the tiles a country owns as well as what cities it has and what tiles they're in
 	public struct Country
 	{
 		public int countryID;
+		public string countryTag;
 		public string name;
 		//public MapData.City capitalCity;
 
@@ -118,9 +111,10 @@ public class Data : MonoBehaviour
 
 		public Dictionary<string, int> tileBuildings;
 
-		public Country(int aa, string ab, long ac, Leader ad)
+		public Country(int ii, string aa, string ab, long ac, Leader ad)
 		{
-			countryID = aa;
+			countryID = ii;
+			countryTag = aa;
 			name = ab;
 			population = ac;
 
@@ -153,6 +147,7 @@ public class Data : MonoBehaviour
 
 	public struct City
 	{
+		public int id;
 		public string name;
 
 		public Country parentCountry;
@@ -160,8 +155,9 @@ public class Data : MonoBehaviour
 		public int population;
 		public Dictionary<string, int> cityBuildings;
 
-		public City(string aa, Country c, int ab, int r1 = 0, int r2 = 1, int r3 = 2, int r4 = 3)
+		public City(int ii, string aa, Country c, int ab, int r1 = 0, int r2 = 1, int r3 = 2, int r4 = 3)
 		{
+			id = ii;
 			name = aa;
 
 			parentCountry = c;
@@ -212,44 +208,6 @@ public class Data : MonoBehaviour
 		}
 	}
 
-
-
-	public void PopulateChunkData(int chunkIndex, Vector2 location)
-	{
-		map[chunkIndex] = new Chunk
-		(
-			chunkIndex,
-			location,
-			new Dictionary<int, Tile>()
-		);
-	}
-
-	public void PopulateChunkTileData(int r, int chunkIndex, int i, Vector2 pos, string material)
-	{
-		if (r == 0 || r == 2)
-		{
-			map[chunkIndex].tiles[i] = new Tile(chunkIndex, i, pos, material, cities["Moscow"],
-				Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
-			);
-		}
-		else if (r == 1)
-		{
-			map[chunkIndex].tiles[i] = new Tile(chunkIndex, i, pos, material, cities["WashingtonDC"],
-				Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
-			);
-
-		}
-		/*
-		else if (r == 2)
-		{
-			map[chunkIndex].tiles[i] = new WaterTile(chunkIndex, i, pos, material,
-				Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
-			);
-
-		}
-		*/
-	}
-
 	public struct Chunk
 	{
 		public Vector2 location;
@@ -273,6 +231,7 @@ public class Data : MonoBehaviour
 		public Vector2 coordinates;
 		public string tileType;
 
+		public Country parentCountry;
 		public City city;
 		public Dictionary<string, int> resources;
 
@@ -282,9 +241,8 @@ public class Data : MonoBehaviour
 
 		public Dictionary<string, int> tileBuildings;
 
-		public Tile(int aa, int ab, Vector2 ac, string ad, City ae, int r1, int r2, int r3, int r4, int r5)
+		public Tile(int aa, int ab, Vector2 ac, string ad, Country pc, City ae, int r1, int r2, int r3, int r4, int r5)
 		{
-			#region Immutable Data
 			//Tile Info
 			chunkIndex = aa;
 			index = ab;
@@ -292,13 +250,13 @@ public class Data : MonoBehaviour
 			tileType = ad;
 
 			//Game Info
+			parentCountry = pc;
 			city = ae;
 
 			resources = new Dictionary<string, int> { { "Iron", r1 }, { "Uranium", r2 }, { "Oil", r3 }, { "Corn" , r4 }, { "Wheat", r5 } };
 
-			#endregion
 
-			#region Mutable
+
 			landArmoredUnits = new Dictionary<int, UnitData.ArmoredUnit> { };
 			landUnits = new Dictionary<string, int> { { "M1 Abrams Main Battle Tank", r1 }, { "Infantry", r2 }, { "Howitzer", r3 }, { "Railway Gun", r4 } };
 			airUnits = new Dictionary<string, int> { { "Enemy AC130 Above!", r1 }, { "Fairchild Republic A-10 Thunderbolt II", r2 }, { "F-22", r3 }, { "F-35", r4 } };
@@ -311,7 +269,7 @@ public class Data : MonoBehaviour
 			//maybe factories are also tile buildings? I want some city buildings but im not sure exactly what
 			tileBuildings = new Dictionary<string, int> { { "Missile Silos", r1 }, { "Forts", r2 }, { "Railroads", r3 }, { "Airport", r3 } };
 
-			#endregion
+
 		}
 	}
 
@@ -357,5 +315,13 @@ public class Data : MonoBehaviour
 
 			#endregion
 		}
+	}
+
+	//Not in use at the moment / for future use
+	public void CreatePlayerCountry(string name /*Leader leader*/)
+	{
+		countries[name] = new Country(0, name, name, 0, nullLeader);
+		Country c = countries[name];
+		Debug.Log("NEW COUNTRY: ID: " + c.countryTag + ", NAME: " + c.name + ", LEADER NAME: " + c.leader.name);
 	}
 }

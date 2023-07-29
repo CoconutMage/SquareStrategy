@@ -23,6 +23,7 @@ public class CameraController : MonoBehaviour
 
 	public GameObject selectedTileIndicator;
 	public GameObject selectedTilePrefab;
+
 	void Start()
 	{
 		if (Instance != null && Instance != this)
@@ -63,12 +64,36 @@ public class CameraController : MonoBehaviour
 		}
 	}
 	public void SetSelectedTileIndicator(MeshInteractionResult currentTile)
-    {
-		Debug.Log("Tile Clicked: " + currentTile.tileIndex);
+	{
 		if (selectedTileIndicator != null) Destroy(selectedTileIndicator);
 		selectedTileIndicator = Instantiate(selectedTilePrefab, currentTile.meshRenderer.transform);
-		Debug.Log("Pos: " + ((selectedTileIndicator.GetComponent<SelectedTileUI>().height * 0.5f) * currentTile.tileIndex % 2));
-		selectedTileIndicator.transform.localPosition = new Vector3((currentTile.tileIndex % map.GetComponent<Map>().chunkXSize) * (selectedTileIndicator.GetComponent<SelectedTileUI>().offsetSide + selectedTileIndicator.GetComponent<SelectedTileUI>().offsetEdge), Mathf.FloorToInt(currentTile.tileIndex / map.GetComponent<Map>().chunkXSize) + ((selectedTileIndicator.GetComponent<SelectedTileUI>().height * 0.5f) * (currentTile.tileIndex % 2)), -1);
+		Debug.Log("Tile Clicked: " + currentTile.tileIndex + ", ChunkIndex: " + currentTile.chunkIndex + ", TileIndex: " + currentTile.tileIndex + 
+			", Pos: " + ((selectedTileIndicator.GetComponent<SelectedTileUI>().height * 0.5f) * currentTile.tileIndex % 2) + "\n" +
+			"Country: " + currentTile.tile.parentCountry.name + ", City: " + currentTile.tile.city.name
+		);
+
+		if (map.GetComponent<Map>() != null)
+		{
+			selectedTileIndicator.transform.localPosition =
+					new Vector3((currentTile.tileIndex % map.GetComponent<Map>().chunkXSize) *
+					(selectedTileIndicator.GetComponent<SelectedTileUI>().offsetSide +
+					selectedTileIndicator.GetComponent<SelectedTileUI>().offsetEdge),
+
+					Mathf.FloorToInt(currentTile.tileIndex / map.GetComponent<Map>().chunkXSize) +
+					((selectedTileIndicator.GetComponent<SelectedTileUI>().height * 0.5f) *
+					(currentTile.tileIndex % 2)), -1);
+		}
+		else
+		{
+			selectedTileIndicator.transform.localPosition =
+				new Vector3((currentTile.tileIndex % map.GetComponent<MapEditorGeneration>().chunkXSize) *
+				(selectedTileIndicator.GetComponent<SelectedTileUI>().offsetSide +
+				selectedTileIndicator.GetComponent<SelectedTileUI>().offsetEdge),
+
+				Mathf.FloorToInt(currentTile.tileIndex / map.GetComponent<MapEditorGeneration>().chunkXSize) +
+				((selectedTileIndicator.GetComponent<SelectedTileUI>().height * 0.5f) *
+				(currentTile.tileIndex % 2)), -1);
+		}
 	}
 
 	MeshInteractionResult currentTile;
@@ -80,7 +105,11 @@ public class CameraController : MonoBehaviour
 			if (currentTile.mesh == null) return;
 			SetSelectedTileIndicator(currentTile);
 
-			ui.PoliticalPanelHandler(currentTile.tile.city.parentCountry);
+			if (data.mapEditorScene != true)
+			{
+				ui.PoliticalPanelHandler(currentTile.tile.parentCountry);
+				ui.DisplayCountryAndCityInfo(currentTile.tile);
+			}
 
 			//ui.DisplayUnits(currentTile.tile.landUnits, currentTile.tile.airUnits);
 			//ui.DisplayResources(currentTile.tile.resources);
@@ -147,7 +176,7 @@ public class CameraController : MonoBehaviour
 		tileToSet.mesh.uv = tempMeshUVs;*/
 
 		if (tileType.Equals("Empty"))
-        {
+		{
 			int[] triangles = new int[12];
 
 			tileToSet.mesh.SetTriangles(triangles, 1);
@@ -156,7 +185,7 @@ public class CameraController : MonoBehaviour
 			data.map[tileToSet.chunkIndex].tiles[tileToSet.tileIndex] = tileToSet.tile;
 		}
 		else
-        {
+		{
 			int[] triangles = new int[12];
 			int ti = 0;
 			int i = tileToSet.tileIndex * 6;
@@ -251,7 +280,8 @@ public class CameraController : MonoBehaviour
 
 				tileIndex = triangleIndex / numTriangles;
 				chunk = hit.transform.gameObject.GetComponent<Chunk>();
-				chunkIndex = chunk.chunkIndex;
+				if(chunk != null) chunkIndex = chunk.chunkIndex;
+				else chunkIndex = hit.transform.gameObject.GetComponent<MapEditorChunk>().chunkIndex;
 
 				Dictionary<int, Data.Tile> tiles = data.map[chunkIndex].tiles;
 				tile = tiles[tileIndex];

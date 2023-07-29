@@ -4875,8 +4875,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 2142, y: 623.15}
-  m_SizeDelta: {x: 200, y: 157.0985}
+  m_AnchoredPosition: {x: 420.62012, y: 198.05}
+  m_SizeDelta: {x: 172.5201, y: 157.0985}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1006308464
 MonoBehaviour:
@@ -6313,7 +6313,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 17.95
+  m_fontSize: 23.05
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -8061,8 +8061,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 2169, y: 350.89}
-  m_SizeDelta: {x: 200, y: 157.1}
+  m_AnchoredPosition: {x: 573.26025, y: 198.05}
+  m_SizeDelta: {x: 132.76, y: 157.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1719068959
 GameObject:
@@ -8666,7 +8666,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 10.15
+  m_fontSize: 12.35
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -8753,7 +8753,7 @@ MonoBehaviour:
   waterUnitsText: {fileID: 0}
   resourceText: {fileID: 231006828}
   cityText: {fileID: 1715762960}
-  countryText: {fileID: 1852199473}
+  countryText: {fileID: 1006308464}
   navyText: {fileID: 284470955}
   politicalPanel: {fileID: 1048414415}
   researchPanel1: {fileID: 752636726}

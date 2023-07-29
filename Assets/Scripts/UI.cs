@@ -281,6 +281,21 @@ public class UI : MonoBehaviour
 		
 	}
 
+	public void DisplayCountryAndCityInfo(Tile tile)
+	{
+		cityText.text = "";
+		countryText.text = "";
+
+		if (!tile.city.Equals(nullCity))
+		{
+			cityText.text = tile.city.name;
+		}
+		if (!tile.parentCountry.Equals(nullCountry))
+		{
+			countryText.text = tile.parentCountry.name;
+		}
+	}
+
 	public void DisplayCity(City city)
 	{
 		if (!city.Equals(Data.nullCity))
