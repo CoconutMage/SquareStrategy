@@ -6,7 +6,7 @@ public class Map : MonoBehaviour
 	public static Map Instance { get; private set; }
 
 	public int xSize, ySize, chunkXSize, chunkYSize;
-	public int chunkIndex;
+	//public int chunkIndex;
 
 	public GameObject chunkPrefab;
 
@@ -45,6 +45,7 @@ public class Map : MonoBehaviour
 		float offsetSide = (height / Mathf.Tan(60 * Mathf.Deg2Rad));
 		//The x length of the angled side on the left and right edges
 		float offsetEdge = (height * 0.5f) * Mathf.Tan(30 * Mathf.Deg2Rad);
+		int chunkIndex = 0;
 
 		for (int w = 0; w < 16/*64*/; w++)
 		{
@@ -123,6 +124,7 @@ public class Map : MonoBehaviour
 		float offsetSide = (height / Mathf.Tan(60 * Mathf.Deg2Rad));
 		//The x length of the angled side on the left and right edges
 		float offsetEdge = (height * 0.5f) * Mathf.Tan(30 * Mathf.Deg2Rad);
+		int chunkIndex = 0;
 
 		for (int w = 0; w < ySize; w++)
 		{
@@ -210,6 +212,7 @@ public class Map : MonoBehaviour
 		float offsetSide = (height / Mathf.Tan(60 * Mathf.Deg2Rad));
 		//The x length of the angled side on the left and right edges
 		float offsetEdge = (height * 0.5f) * Mathf.Tan(30 * Mathf.Deg2Rad);
+		int chunkIndex = 0;
 
 		for (int w = 0; w < ySize; w++)
 		{

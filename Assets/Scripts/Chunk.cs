@@ -18,8 +18,6 @@ public class Chunk : MonoBehaviour
 	{
 		data = Data.Instance;
 		map = Map.Instance;
-
-		chunkIndex = map.chunkIndex;
 	}
 	void Start()
 	{

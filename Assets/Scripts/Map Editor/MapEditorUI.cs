@@ -41,27 +41,42 @@ public class MapEditorUI : MonoBehaviour
 
 		//Map Saving
 		mapText += mapEditorMap.xSize + "x" + mapEditorMap.ySize + "\n";
-		for (int y = 0; y < data.map.Count; y++)
-		{
-			for (int x = 0; x < data.map[y].tiles.Count; x++)
+
+		float y = 0;
+		float x;
+		float colNum = 0;
+		int[,] mapArray = new int[Map.Instance.chunkXSize * Map.Instance.xSize, Map.Instance.chunkYSize * Map.Instance.ySize];
+
+		for (int chunkIndex = 0; chunkIndex < data.map.Count; chunkIndex++)
+        {
+			for (int i = 0, ti = 0, index = 0; y < Map.Instance.chunkYSize; y++)
 			{
-				/*
-				if (x == 7) { y++; x = 0; }
-				if (y == 3) { y = 0;x = 1; }
-				*/
-				Tile t = data.map[y].
-					tiles[x];
-				//mapText += "{";
-				//mapText += t.chunkIndex + ", " + t.index + ", ";
-				//mapText += "(" + t.coordinates.x + ", " + t.coordinates.y + ") ";
-				mapText += t.tileType + ", ";
+				colNum = 0;
+				for (x = 0; colNum < Map.Instance.chunkXSize; x += 1, i += 25, ti += 12, index++)
+				{
+					float xCord = x + (Map.Instance.chunkXSize * (chunkIndex % Map.Instance.xSize)), yCord = y + (Map.Instance.chunkYSize * (chunkIndex / Map.Instance.xSize));
 
-				//mapText += t.parentCountry.countryID + ", ";
-				//mapText += t.parentCountry.countryTag + ", ";
-				//mapText += t.city.cityName; //+ ",";
+					//mapArray[(int)xCord, (int)yCord] = data.map[chunkIndex].tiles[index].tileTypeID;
+
+					if (data.map[chunkIndex].tiles[index].tileType == "water") mapArray[(int)xCord, (int)yCord] = 16;
+					else if (data.map[chunkIndex].tiles[index].tileType == "coast") mapArray[(int)xCord, (int)yCord] = 15;
+					else if (data.map[chunkIndex].tiles[index].tileType == "snow") mapArray[(int)xCord, (int)yCord] = 14;
+					else if (data.map[chunkIndex].tiles[index].tileType == "snow") mapArray[(int)xCord, (int)yCord] = 13;
+					else if (data.map[chunkIndex].tiles[index].tileType == "snow") mapArray[(int)xCord, (int)yCord] = 12;
+					else if (data.map[chunkIndex].tiles[index].tileType == "tundra") mapArray[(int)xCord, (int)yCord] = 11;
+					else if (data.map[chunkIndex].tiles[index].tileType == "tundra") mapArray[(int)xCord, (int)yCord] = 10;
+					else if (data.map[chunkIndex].tiles[index].tileType == "tundra") mapArray[(int)xCord, (int)yCord] = 9;
+					else if (data.map[chunkIndex].tiles[index].tileType == "desert") mapArray[(int)xCord, (int)yCord] = 8;
+					else if (data.map[chunkIndex].tiles[index].tileType == "desert") mapArray[(int)xCord, (int)yCord] = 7;
+					else if (data.map[chunkIndex].tiles[index].tileType == "desert") mapArray[(int)xCord, (int)yCord] = 6;
+					else if (data.map[chunkIndex].tiles[index].tileType == "forest") mapArray[(int)xCord, (int)yCord] = 5;
+					else if (data.map[chunkIndex].tiles[index].tileType == "forest") mapArray[(int)xCord, (int)yCord] = 4;
+					else if (data.map[chunkIndex].tiles[index].tileType == "forest") mapArray[(int)xCord, (int)yCord] = 3;
+					else mapArray[(int)xCord, (int)yCord] = 1;
+
+					colNum++;
+				}
 			}
-
-			mapText += "\n";
 		}
 
 		// Write to disk
