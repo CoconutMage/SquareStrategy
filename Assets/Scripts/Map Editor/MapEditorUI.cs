@@ -45,16 +45,17 @@ public class MapEditorUI : MonoBehaviour
 		float y = 0;
 		float x;
 		float colNum = 0;
-		int[,] mapArray = new int[Map.Instance.chunkXSize * Map.Instance.xSize, Map.Instance.chunkYSize * Map.Instance.ySize];
+		int[,] mapArray = new int[MapEditorGeneration.Instance.chunkXSize * MapEditorGeneration.Instance.xSize, MapEditorGeneration.Instance.chunkYSize * MapEditorGeneration.Instance.ySize];
 
 		for (int chunkIndex = 0; chunkIndex < data.map.Count; chunkIndex++)
-        {
-			for (int i = 0, ti = 0, index = 0; y < Map.Instance.chunkYSize; y++)
+		{
+			for (int i = 0, ti = 0, index = 0; y < MapEditorGeneration.Instance.chunkYSize; y++)
 			{
 				colNum = 0;
-				for (x = 0; colNum < Map.Instance.chunkXSize; x += 1, i += 25, ti += 12, index++)
+				for (x = 0; colNum < MapEditorGeneration.Instance.chunkXSize; x += 1, i += 25, ti += 12, index++)
 				{
-					float xCord = x + (Map.Instance.chunkXSize * (chunkIndex % Map.Instance.xSize)), yCord = y + (Map.Instance.chunkYSize * (chunkIndex / Map.Instance.xSize));
+					float xCord = x + (MapEditorGeneration.Instance.chunkXSize * (chunkIndex % MapEditorGeneration.Instance.xSize)), 
+						yCord = y + (MapEditorGeneration.Instance.chunkYSize * (chunkIndex / MapEditorGeneration.Instance.xSize));
 
 					//mapArray[(int)xCord, (int)yCord] = data.map[chunkIndex].tiles[index].tileTypeID;
 
@@ -77,6 +78,15 @@ public class MapEditorUI : MonoBehaviour
 					colNum++;
 				}
 			}
+		}
+
+		for (int yy = 0; yy < mapArray.GetLength(0); yy++)
+		{
+			for (int xx = 0; xx < mapArray.GetLength(1); xx++)
+			{
+				mapText += mapArray[xx, yy] + ", ";
+			}
+			mapText += "\n";
 		}
 
 		// Write to disk
