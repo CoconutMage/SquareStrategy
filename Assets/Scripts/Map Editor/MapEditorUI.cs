@@ -42,13 +42,14 @@ public class MapEditorUI : MonoBehaviour
 		//Map Saving
 		mapText += mapEditorMap.xSize + "x" + mapEditorMap.ySize + "\n";
 
-		float y = 0;
-		float x;
-		float colNum = 0;
 		int[,] mapArray = new int[MapEditorGeneration.Instance.chunkXSize * MapEditorGeneration.Instance.xSize, MapEditorGeneration.Instance.chunkYSize * MapEditorGeneration.Instance.ySize];
 
 		for (int chunkIndex = 0; chunkIndex < data.map.Count; chunkIndex++)
 		{
+			Debug.Log("Chunk Index: " + data.map.Count);
+			float y = 0;
+			float x;
+			float colNum = 0;
 			for (int i = 0, ti = 0, index = 0; y < MapEditorGeneration.Instance.chunkYSize; y++)
 			{
 				colNum = 0;
@@ -76,6 +77,7 @@ public class MapEditorUI : MonoBehaviour
 					else mapArray[(int)xCord, (int)yCord] = 1;
 
 					colNum++;
+					Debug.Log("X: " + xCord + " Y: " + yCord);
 				}
 			}
 		}
