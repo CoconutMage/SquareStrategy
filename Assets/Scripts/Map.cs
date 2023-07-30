@@ -34,7 +34,8 @@ public class Map : MonoBehaviour
 
 		//PerlinGenerate();
 		//Generate();
-		ReadMap();
+		ReadCivMap();
+		//ReadMapFile();
 	}
 
 	void Generate()
@@ -98,7 +99,7 @@ public class Map : MonoBehaviour
 
 						if (colNum % 2 != 0) y -= (0.5f * height);
 
-						PopulateChunkTileData(0, chunkIndex, index, new Vector2(0, 0), tileType);
+						PopulateChunkTileData(chunkIndex, index, new Vector2(0, 0), tileType);
 						colNum++;
 					}
 				}
@@ -184,7 +185,7 @@ public class Map : MonoBehaviour
 
 						if (colNum % 2 != 0) y -= (0.5f * height);
 
-						PopulateChunkTileData(0, chunkIndex, index, new Vector2(0, 0), tileType);
+						PopulateChunkTileData(chunkIndex, index, new Vector2(0, 0), tileType);
 						//data.mapData.PopulateChunkTileData(r, chunkIndex, index, new Vector2(0, 0), "Stone");
 						colNum++;
 					}
@@ -202,7 +203,7 @@ public class Map : MonoBehaviour
 			}
 		}
 	}
-	void ReadMap()
+	void ReadCivMap()
 	{
 		float height = 1;
 		//The length of one flat side
@@ -226,7 +227,7 @@ public class Map : MonoBehaviour
 					colNum = 0;
 					for (x = 0; colNum < chunkXSize; x += /*offsetSide + offsetEdge*/ 1, i += 25, ti += 12, index++)
 					{
-						int r = Random.Range(0, 101);
+						//int r = Random.Range(0, 101);
 						string tileType = "";
 
 						//These numbers I pulled out of my ass, so edit for your pleasure. Except for coords and data.map size, dont edit those
@@ -248,7 +249,7 @@ public class Map : MonoBehaviour
 						else if (emv.tiles[(int)xCord, (int)yCord] == 3) tileType = "forest";
 						else tileType = "grass";
 
-						PopulateChunkTileData(Random.Range(0,3), chunkIndex, index, new Vector2(0, 0), tileType);
+						PopulateChunkTileData(chunkIndex, index, new Vector2(0, 0), tileType);
 						colNum++;
 					}
 				}
@@ -276,78 +277,40 @@ public class Map : MonoBehaviour
 		);
 	}
 
-	public void PopulateChunkTileData(int r, int chunkIndex, int i, Vector2 pos, string material)
+	public void PopulateChunkTileData(int chunkIndex, int i, Vector2 pos, string material)
 	{
-		if (!data.mapEditorScene)
+		if (chunkIndex == 67 && i == 35)
 		{
-			if (chunkIndex == 67 && i == 35)
-			{
-				data.map[chunkIndex].tiles[i] = new Data.Tile(chunkIndex, i, pos, material, data.countries["USA"], data.cities["WashingtonDC"],
-					Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
-				);
-			}
-			else if (chunkIndex == 67 && i == 34)
-			{
-				data.map[chunkIndex].tiles[i] = new Data.Tile(chunkIndex, i, pos, material, data.countries["USA"], Data.nullCity,
-					Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
-				);
-			}
-			else if (chunkIndex == 67 && i == 42)
-			{
-				data.map[chunkIndex].tiles[i] = new Data.Tile(chunkIndex, i, pos, material, data.countries["USA"], Data.nullCity,
-					Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
-				);
-			}
+			data.map[chunkIndex].tiles[i] = new Data.Tile(chunkIndex, i, pos, material, data.countries["USA"], data.cities["WashingtonDC"],
+				Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
+			);
+		}
+		else if (chunkIndex == 67 && i == 34)
+		{
+			data.map[chunkIndex].tiles[i] = new Data.Tile(chunkIndex, i, pos, material, data.countries["USA"], Data.nullCity,
+				Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
+			);
+		}
+		else if (chunkIndex == 67 && i == 42)
+		{
+			data.map[chunkIndex].tiles[i] = new Data.Tile(chunkIndex, i, pos, material, data.countries["USA"], Data.nullCity,
+				Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
+			);
+		}
 
-			else if (chunkIndex == 43 && i == 30)
-			{
-				data.map[chunkIndex].tiles[i] = new Data.Tile(chunkIndex, i, pos, material, data.countries["USSR"], data.cities["Moscow"],
-					Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
-				);
-			}
-			else
-			{
-				data.map[chunkIndex].tiles[i] = new Data.Tile(chunkIndex, i, pos, material, Data.nullCountry,
-					Data.nullCity,//data.cities["Moscow"],
-					Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
-				);
-			}
+		else if (chunkIndex == 43 && i == 30)
+		{
+			data.map[chunkIndex].tiles[i] = new Data.Tile(chunkIndex, i, pos, material, data.countries["USSR"], data.cities["Moscow"],
+				Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
+			);
 		}
 		else
 		{
-			if (chunkIndex == 0 && i != 0)
-			{
-				data.map[chunkIndex].tiles[i] = new Data.Tile(chunkIndex, i, pos, material, data.countries["USA"], Data.nullCity,
-					Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
-				);
-			}
-			else if (chunkIndex == 0 && i == 0)
-			{
-				data.map[chunkIndex].tiles[i] = new Data.Tile(chunkIndex, i, pos, material, data.countries["USA"], data.cities["WashingtonDC"],
-					Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
-				);
-			}
-
-			else if (chunkIndex == 3 && i != 63)
-			{
-				data.map[chunkIndex].tiles[i] = new Data.Tile(chunkIndex, i, pos, material, data.countries["USSR"], Data.nullCity,
-					Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
-				);
-			}
-			else if (chunkIndex == 3 && i == 63)
-			{
-				data.map[chunkIndex].tiles[i] = new Data.Tile(chunkIndex, i, pos, material, data.countries["USSR"], data.cities["Moscow"],
-					Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
-				);
-			}
-
-			else
-			{
-				data.map[chunkIndex].tiles[i] = new Data.Tile(chunkIndex, i, pos, material, Data.nullCountry, Data.nullCity,
-					Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
-				);
-			}
-
+			data.map[chunkIndex].tiles[i] = new Data.Tile(chunkIndex, i, pos, material, Data.nullCountry,
+				Data.nullCity,//data.cities["Moscow"],
+				Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
+			);
 		}
+
 	}
 }

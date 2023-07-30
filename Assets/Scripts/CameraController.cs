@@ -65,12 +65,18 @@ public class CameraController : MonoBehaviour
 	}
 	public void SetSelectedTileIndicator(MeshInteractionResult currentTile)
 	{
+		Data.Tile tile = currentTile.tile;
+
 		if (selectedTileIndicator != null) Destroy(selectedTileIndicator);
 		selectedTileIndicator = Instantiate(selectedTilePrefab, currentTile.meshRenderer.transform);
-		Debug.Log("Tile Clicked: " + currentTile.tileIndex + ", ChunkIndex: " + currentTile.chunkIndex + ", TileIndex: " + currentTile.tileIndex + 
+
+		string cap = "";
+		if (tile.city.isCapital) cap = ", Capital City";
+		Debug.Log("Tile Clicked: " + currentTile.tileIndex + ", ChunkIndex: " + currentTile.chunkIndex + ", TileIndex: " + currentTile.tileIndex +
 			", Pos: " + ((selectedTileIndicator.GetComponent<SelectedTileUI>().height * 0.5f) * currentTile.tileIndex % 2) + "\n" +
-			"Country: " + currentTile.tile.parentCountry.name + ", City: " + currentTile.tile.city.name
+			"Country: " + tile.parentCountry.countryName + ", City: " + tile.city.cityName + cap
 		);
+
 
 		if (map.GetComponent<Map>() != null)
 		{

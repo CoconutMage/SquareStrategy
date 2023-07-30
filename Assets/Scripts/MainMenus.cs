@@ -68,7 +68,7 @@ public class MainMenus : MonoBehaviour
 		if (CountryCreationValuesNullChecker())
 		{
 			Debug.Log(countryName.text);
-			data.CreatePlayerCountry(countryName.text);
+			//data.CreatePlayerCountry(countryName.text);
 		}
 	}
 

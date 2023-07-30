@@ -66,11 +66,6 @@ public class MapEditorGeneration : MonoBehaviour
 						int r = Random.Range(0, 101);
 						string tileType = "";
 
-						//Debug.Log("Perlin: " + Mathf.PerlinNoise(x / (float)xSize, y / (float)ySize));
-						//Debug.Log("Index: " + chunkIndex + " : " + x + " : " + (xSize * (chunkIndex % map.xSize)) * (offsetSide + offsetEdge) + " : " + (float)(xSize * map.xSize * (offsetSide + offsetEdge)));
-
-						//--------------------------------------------------------------------------------------------------------------------------- I think these cords are wrong
-
 						//These numbers I pulled out of my ass, so edit for your pleasure. Except for coords and map size, dont edit those
 						float xCord = x + (chunkXSize * (chunkIndex % xSize) * (offsetSide + offsetEdge)), yCord = y + (chunkYSize * (chunkIndex / xSize) * height);
 						float mapSizeX = (float)(chunkXSize * xSize * (offsetSide + offsetEdge)), mapSizeY = (float)(chunkYSize * ySize * height);
@@ -88,11 +83,12 @@ public class MapEditorGeneration : MonoBehaviour
 						float offsetZ = -2.5f;
 						float perlinVal = 0;
 
-						//-----------------------------------------------------------------------------
 
 						for (int k = 0; k < octave; k++)
 						{
-							perlinVal += (Mathf.PerlinNoise((offsetX + xCord) / mapSizeX * frequency * (Mathf.Pow(lacunarity, k)), (offsetY + yCord) / mapSizeY * frequency * (Mathf.Pow(lacunarity, k)))) * Mathf.Pow(persistance, k);
+							perlinVal += (Mathf.PerlinNoise((offsetX + xCord) / mapSizeX * frequency * 
+								(Mathf.Pow(lacunarity, k)), (offsetY + yCord) / mapSizeY * frequency * 
+								(Mathf.Pow(lacunarity, k)))) * Mathf.Pow(persistance, k);
 						}
 
 						perlinVal *= amplitude;
@@ -106,7 +102,7 @@ public class MapEditorGeneration : MonoBehaviour
 
 						if (colNum % 2 != 0) y -= (0.5f * height);
 
-						PopulateChunkTileData(0, chunkIndex, index, new Vector2(0, 0), tileType);
+						PopulateChunkTileData(Random.Range(0, 10), chunkIndex, index, new Vector2(0, 0), tileType);
 						//mapData.PopulateChunkTileData(r, chunkIndex, index, new Vector2(0, 0), "Stone");
 						colNum++;
 					}
@@ -135,78 +131,42 @@ public class MapEditorGeneration : MonoBehaviour
 		);
 	}
 
-	public void PopulateChunkTileData(int r, int chunkIndex, int i, Vector2 pos, string material)
+	public void PopulateChunkTileData(int r, int chunkIndex, int index, Vector2 pos, string tileType)
 	{
-		if (!data.mapEditorScene)
+		if (chunkIndex == 0 && index != 0 && index != 1 && index != 8)
 		{
-			if (chunkIndex == 67 && i == 35)
-			{
-				data.map[chunkIndex].tiles[i] = new Data.Tile(chunkIndex, i, pos, material, data.countries["USA"], data.cities["WashingtonDC"],
-					Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
-				);
-			}
-			else if (chunkIndex == 67 && i == 34)
-			{
-				data.map[chunkIndex].tiles[i] = new Data.Tile(chunkIndex, i, pos, material, data.countries["USA"], Data.nullCity,
-					Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
-				);
-			}
-			else if (chunkIndex == 67 && i == 42)
-			{
-				data.map[chunkIndex].tiles[i] = new Data.Tile(chunkIndex, i, pos, material, data.countries["USA"], Data.nullCity,
-					Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
-				);
-			}
-
-			else if (chunkIndex == 43 && i == 30)
-			{
-				data.map[chunkIndex].tiles[i] = new Data.Tile(chunkIndex, i, pos, material, data.countries["USSR"], data.cities["Moscow"],
-					Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
-				);
-			}
-			else
-			{
-				data.map[chunkIndex].tiles[i] = new Data.Tile(chunkIndex, i, pos, material, Data.nullCountry,
-					Data.nullCity,//data.cities["Moscow"],
-					Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
-				);
-			}
+			createTileData(data.countries["USA"], Data.nullCity);
 		}
+		else if (chunkIndex == 0 && index == 0)
+		{
+			createTileData(data.countries["USA"], data.cities["WashingtonDC"]);
+		}
+		else if (chunkIndex == 0 && index == 1)
+		{
+			createTileData(data.countries["USA"], data.cities["New York"]);
+		}
+		else if (chunkIndex == 0 && index == 8)
+		{
+			createTileData(data.countries["USA"], data.cities["Los Angeles"]);
+		}
+
+		else if (chunkIndex == 3 && index != 63)
+		{
+			createTileData(data.countries["USSR"], Data.nullCity);
+		}
+		else if (chunkIndex == 3 && index == 63)
+		{
+			createTileData(data.countries["USSR"], data.cities["Moscow"]);
+		}
+
 		else
 		{
-			if (chunkIndex == 0 && i != 0)
-			{
-				data.map[chunkIndex].tiles[i] = new Data.Tile(chunkIndex, i, pos, material, data.countries["USA"], Data.nullCity,
-					Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
-				);
-			}
-			else if (chunkIndex == 0 && i == 0)
-			{
-				data.map[chunkIndex].tiles[i] = new Data.Tile(chunkIndex, i, pos, material, data.countries["USA"], data.cities["WashingtonDC"],
-					Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
-				);
-			}
+			createTileData(Data.nullCountry, Data.nullCity);
+		}
 
-			else if (chunkIndex == 3 && i != 63)
-			{
-				data.map[chunkIndex].tiles[i] = new Data.Tile(chunkIndex, i, pos, material, data.countries["USSR"], Data.nullCity,
-					Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
-				);
-			}
-			else if (chunkIndex == 3 && i == 63)
-			{
-				data.map[chunkIndex].tiles[i] = new Data.Tile(chunkIndex, i, pos, material, data.countries["USSR"], data.cities["Moscow"],
-					Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
-				);
-			}
-
-			else
-			{
-				data.map[chunkIndex].tiles[i] = new Data.Tile(chunkIndex, i, pos, material, Data.nullCountry, Data.nullCity,
-					Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10), Random.Range(0, 10)
-				);
-			}
-
+		void createTileData(Data.Country country, Data.City city)
+		{
+			data.map[chunkIndex].tiles[index] = new Data.Tile(chunkIndex, index, pos, tileType, country, city, r, r, r, r, r);
 		}
 	}
 }

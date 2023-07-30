@@ -158,9 +158,9 @@ public class UI : MonoBehaviour
 				break;
 			case 9:
 				Tile tile = data.map[0].tiles[0];
-				tile.landArmoredUnits[0] = uData.armoredUnits[0];
+				//tile.landArmoredUnits[0] = uData.armoredUnits[0];
 				data.map[0].tiles[0] = tile;
-				bazinga.text = tile.landArmoredUnits[0].armor + "\n" + tile.landArmoredUnits[0].speed + "\n" + tile.landArmoredUnits[0].gun + "\n" + tile.landArmoredUnits[0].reliability;
+				//bazinga.text = tile.landArmoredUnits[0].armor + "\n" + tile.landArmoredUnits[0].speed + "\n" + tile.landArmoredUnits[0].gun + "\n" + tile.landArmoredUnits[0].reliability;
 				GameObject tank = Instantiate(TankPrefab);
 				tank.transform.parent = GameObject.Find("Map").transform;
 				tank.transform.localPosition = data.map[0].tiles[0].coordinates;
@@ -194,16 +194,16 @@ public class UI : MonoBehaviour
 		if (!country.Equals(Data.nullCountry) || !country.Equals(playerOne.country))
 		{
 			displayingCountry = country;
-			leaderName.text = country.leader.name;
-			countryText.text = country.name;
-			leaderImage.sprite = country.leader.leaderImage;
+			leaderName.text = country.countryLeader.name;
+			countryText.text = country.countryName;
+			leaderImage.sprite = country.countryLeader.leaderImage;
 		}
 		else
 		{
 			displayingCountry = playerOne.country;
-			leaderName.text = playerOne.country.leader.name;
-			countryText.text = playerOne.country.name;
-			leaderImage.sprite = country.leader.leaderImage;
+			leaderName.text = playerOne.country.countryLeader.name;
+			countryText.text = playerOne.country.countryName;
+			leaderImage.sprite = country.countryLeader.leaderImage;
 		}
 	}
 
@@ -288,14 +288,15 @@ public class UI : MonoBehaviour
 
 		if (!tile.city.Equals(nullCity))
 		{
-			cityText.text = tile.city.name;
+			cityText.text = tile.city.cityName;
 		}
 		if (!tile.parentCountry.Equals(nullCountry))
 		{
-			countryText.text = tile.parentCountry.name;
+			countryText.text = tile.parentCountry.countryName;
 		}
 	}
 
+	/*
 	public void DisplayCity(City city)
 	{
 		if (!city.Equals(Data.nullCity))
@@ -333,6 +334,7 @@ public class UI : MonoBehaviour
 			navyText.text = temp;
 		}
 	}
+	*/
 
 	/* COROUTINES */
 	public bool politicalPanelOut;
