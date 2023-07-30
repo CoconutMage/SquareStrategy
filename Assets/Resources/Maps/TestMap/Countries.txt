@@ -1,6 +1,6 @@
 {
 	0, USA, The United States of America, Dwight D. Eisenhower
-	{
+	{		0, 		0, 		Data+City
 		TILE DATA HERE
 	}
 },

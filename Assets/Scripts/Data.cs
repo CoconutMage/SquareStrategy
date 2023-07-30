@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 public class Data : MonoBehaviour
 {
@@ -51,7 +52,13 @@ public class Data : MonoBehaviour
 		leaders["Dwight D. Eisenhower"] = new Leader("Dwight D. Eisenhower", leaderImages["Wojtek"], "Not Communist");
 		leaders["Josef Stalin"] = new Leader("Josef Stalin", leaderImages["Stalin"], "Communist");
 
-		countries["USA"] = new Country(0, "USA", "The United States of America", leaders["Dwight D. Eisenhower"], new Dictionary<int, Tile>());
+
+		Dictionary<int, Tile> americaTile = new Dictionary<int, Tile>();
+
+		countries["USA"] = new Country(0, "USA", "The United States of America", leaders["Dwight D. Eisenhower"], americaTile);
+	
+
+
 		countries["USSR"] = new Country(1, "USSR", "The Union of Soviet Socialist Republics", leaders["Josef Stalin"], new Dictionary<int, Tile>());
 
 		cities["WashingtonDC"] = new City(0, "Washington D.C.", true, countries["USA"], 689545);
@@ -59,6 +66,9 @@ public class Data : MonoBehaviour
 		cities["Los Angeles"] = new City(1, "Los Angeles", false, countries["USA"], 689545);
 
 		cities["Moscow"] = new City(2, "Moscow", true, countries["USSR"], 0);
+
+
+		americaTile[0] = new Tile(0, 0, new Vector2(0, 0), "grass", countries["USA"], cities["WashingtonDC"], 0, 0, 0, 0, 0);
 	}
 
 	public void CreatePlayer(string playerName, Country playerCountry)

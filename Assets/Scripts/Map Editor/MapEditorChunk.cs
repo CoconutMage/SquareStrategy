@@ -109,11 +109,9 @@ public class MapEditorChunk : MonoBehaviour
 				Test(1,7, false, true);
 				Test(2,8, true, false);
 
-
 				//15
 				Test(2,8, true, true);
 				Test(3,9, false, false);
-
 
 				//17
 				loc = new Vector3(vertices[i + 3].x, vertices[i + 9].y);
@@ -148,7 +146,6 @@ public class MapEditorChunk : MonoBehaviour
 					}
 					vertices.Add(loc);
 				}
-
 
 				//23
 				loc = new Vector3(vertices[i + 6].x, vertices[i + 12].y);
@@ -199,15 +196,10 @@ public class MapEditorChunk : MonoBehaviour
 
 				if (colNum % 2 != 0) y -= (0.5f * height);
 
-				colors.Add(colorDict[tileType]);
-
-				colors.Add(colorDict[tileType]);
-				colors.Add(colorDict[tileType]);
-				colors.Add(colorDict[tileType]);
-
-				colors.Add(colorDict[tileType]);
-				colors.Add(colorDict[tileType]);
-				colors.Add(colorDict[tileType]);
+				for (int r = 0; r < 7; r++)
+				{
+					colors.Add(colorDict[tileType]);
+				}
 
 				if ((chunkIndex % map.xSize == 0 && index % xSize == 0) || (chunkIndex % map.xSize == map.xSize - 1 && index % xSize == xSize - 1) || (chunkIndex / ((map.ySize - 1) * map.xSize) >= 1 && index / xSize >= ySize - 1) || (chunkIndex < map.xSize && index < xSize))
 				{

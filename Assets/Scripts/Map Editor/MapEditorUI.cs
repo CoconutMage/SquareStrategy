@@ -41,9 +41,9 @@ public class MapEditorUI : MonoBehaviour
 
 		//Map Saving
 		mapText += mapEditorMap.xSize + "x" + mapEditorMap.ySize + "\n";
-		for (int y = 0; y < data.map.Values.Count; y++)
+		for (int y = 0; y < data.map.Count; y++)
 		{
-			for (int x = 0; x < data.map[y].tiles.Values.Count; x++)
+			for (int x = 0; x < data.map[y].tiles.Count; x++)
 			{
 				/*
 				if (x == 7) { y++; x = 0; }
