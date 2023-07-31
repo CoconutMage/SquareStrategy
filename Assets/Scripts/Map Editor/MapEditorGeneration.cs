@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
+using static Data;
+using static UnityEditor.PlayerSettings;
 
 public class MapEditorGeneration : MonoBehaviour
 {
@@ -34,7 +36,7 @@ public class MapEditorGeneration : MonoBehaviour
 		noiseOffsetX = Random.Range(0, 9999);
 		noiseOffsetY = Random.Range(0, 9999);
 
-		PerlinGenerate();
+		//PerlinGenerate();
 	}
 
 	void PerlinGenerate()
@@ -167,6 +169,73 @@ public class MapEditorGeneration : MonoBehaviour
 		void createTileData(Data.Country country, Data.City city)
 		{
 			data.map[chunkIndex].tiles[index] = new Data.Tile(chunkIndex, index, pos, tileType, country, city, r, r, r, r, r);
+		}
+	}
+
+
+	public void ReadMap(int[,] tileTypes, int mapXSize, int mapYSize)
+	{
+		float height = 1;
+		//The length of one flat side
+		float offsetSide = (height / Mathf.Tan(60 * Mathf.Deg2Rad));
+		//The x length of the angled side on the left and right edges
+		float offsetEdge = (height * 0.5f) * Mathf.Tan(30 * Mathf.Deg2Rad);
+		int chunkIndex = 0;
+
+		for (int w = 0; w < mapYSize; w++)
+		{
+			for (int z = 0; z < mapXSize; z++, chunkIndex++)
+			{
+				Vector2 chunkPos = new Vector2(z * chunkXSize * (offsetSide + offsetEdge), w * chunkYSize * height);
+				PopulateChunkData(chunkIndex, chunkPos);
+
+				float y = 0;
+				float x;
+				float colNum = 0;
+
+				for (int i = 0, ti = 0, index = 0; y < chunkYSize; y++)
+				{
+					colNum = 0;
+					for (x = 0; colNum < chunkXSize; x += /*offsetSide + offsetEdge*/ 1, i += 25, ti += 12, index++)
+					{
+						//int r = Random.Range(0, 101);
+						string tileType = "";
+
+						//These numbers I pulled out of my ass, so edit for your pleasure. Except for coords and data.map size, dont edit those
+						float xCord = x + (chunkXSize * (chunkIndex % mapXSize))/* * (offsetSide + offsetEdge))*/, yCord = y + (chunkYSize * (chunkIndex / mapXSize)/* * height*/);
+
+						if (tileTypes[(int)xCord, (int)yCord] == 16) tileType = "water";
+						else if (tileTypes[(int)xCord, (int)yCord] == 15) tileType = "coast";
+						else if (tileTypes[(int)xCord, (int)yCord] == 14) tileType = "snow";
+						else if (tileTypes[(int)xCord, (int)yCord] == 13) tileType = "snow";
+						else if (tileTypes[(int)xCord, (int)yCord] == 12) tileType = "snow";
+						else if (tileTypes[(int)xCord, (int)yCord] == 11) tileType = "tundra";
+						else if (tileTypes[(int)xCord, (int)yCord] == 10) tileType = "tundra";
+						else if (tileTypes[(int)xCord, (int)yCord] == 9) tileType = "tundra";
+						else if (tileTypes[(int)xCord, (int)yCord] == 8) tileType = "desert";
+						else if (tileTypes[(int)xCord, (int)yCord] == 7) tileType = "desert";
+						else if (tileTypes[(int)xCord, (int)yCord] == 6) tileType = "desert";
+						else if (tileTypes[(int)xCord, (int)yCord] == 5) tileType = "forest";
+						else if (tileTypes[(int)xCord, (int)yCord] == 4) tileType = "forest";
+						else if (tileTypes[(int)xCord, (int)yCord] == 3) tileType = "forest";
+						else tileType = "grass";
+
+						data.map[chunkIndex].tiles[index] = new Tile(chunkIndex, index, new Vector2(0,0), tileType, nullCountry, nullCity, 0, 0, 0, 0, 0);
+
+						colNum++;
+					}
+				}
+
+				//Physical Characteristics
+				GameObject chunk = Instantiate(chunkPrefab);
+				chunk.transform.parent = transform;
+				chunk.transform.localPosition = chunkPos;
+
+				//Data Management
+				chunkScript = chunk.GetComponent<MapEditorChunk>();
+				chunkScript.chunkIndex = chunkIndex;
+				chunkScript.chunkPosition = chunkPos;
+			}
 		}
 	}
 }

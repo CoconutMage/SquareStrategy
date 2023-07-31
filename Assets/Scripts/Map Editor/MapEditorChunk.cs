@@ -79,6 +79,9 @@ public class MapEditorChunk : MonoBehaviour
 				if (colNum % 2 != 0) y += (0.5f * height);
 
 				Data.Chunk chunk = data.map[chunkIndex];
+				Debug.Log(index);
+				Debug.Log(chunk.tiles[index]);
+				Debug.Log(chunk.tiles[index].tileType);
 				string tileType = chunk.tiles[index].tileType;
 
 				float distBetween;
@@ -134,6 +137,7 @@ public class MapEditorChunk : MonoBehaviour
 					inwardDist = Mathf.Cos(60 * Mathf.Deg2Rad) * distBetween;
 					xDist = Mathf.Cos(60 * Mathf.Deg2Rad) * inwardDist;
 					yDist = Mathf.Sin(60 * Mathf.Deg2Rad) * inwardDist;
+
 					if (c)
 					{
 						if (d) loc = new Vector3(vertices[i + b].x + xDist, vertices[i + b].y + yDist);

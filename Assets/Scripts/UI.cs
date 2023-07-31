@@ -191,7 +191,7 @@ public class UI : MonoBehaviour
 
 	void UpdatePoliticalPanel(Country country)
 	{
-		if (!country.Equals(Data.nullCountry) || !country.Equals(playerOne.country))
+		if (!country.Equals(nullCountry) || !country.Equals(playerOne.country))
 		{
 			displayingCountry = country;
 			leaderName.text = country.countryLeader.name;

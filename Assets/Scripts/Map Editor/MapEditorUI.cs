@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using TMPro;
 using UnityEngine;
@@ -77,7 +78,7 @@ public class MapEditorUI : MonoBehaviour
 					else mapArray[(int)xCord, (int)yCord] = 1;
 
 					colNum++;
-					Debug.Log("X: " + xCord + " Y: " + yCord);
+					//Debug.Log("X: " + xCord + " Y: " + yCord);
 				}
 			}
 		}
@@ -106,7 +107,7 @@ public class MapEditorUI : MonoBehaviour
 			countryText += country.countryTag + ", ";
 			countryText += country.countryName + ", ";
 
-			countryText += country.countryLeader.name + "\n\t{";
+			countryText += country.countryLeader.name + "\n\t{\n";
 
 			foreach (Tile tile in data.countries[country.countryTag].countryTiles.Values)
 			{
@@ -133,69 +134,37 @@ public class MapEditorUI : MonoBehaviour
 
 	public void LoadMapFromFile()
 	{
-		/*
+		StreamReader reader = new(mapFilePath);
+		string mapSizeString = reader.ReadLine();
+
 		int lineInFile = 0;
+
+		int mapSizeX, mapSizeY;
+
 		using (StreamReader r = new(mapFilePath))
 		{
 			while (r.ReadLine() != null) lineInFile++;
 		}
 
-		StreamReader reader = new(mapFilePath);
+		string[] temp = mapSizeString.Split("x");
+		mapSizeX = int.Parse(temp[0]);
+		mapSizeY = int.Parse(temp[1]);
 
-		string[] temp = new string[5];
-		for (int i = 0; i < lineInFile; i++)
+		int[,] tileTypes = new int[mapSizeX * 8, mapSizeY * 8];
+
+		for (int y = 0; y < mapSizeY * 8; y++)
 		{
 			string currentLine = reader.ReadLine();
 			string[] lineSplit = currentLine.Split(",");
 
-			temp = lineSplit;
-		}
-
-		int ii = 0;
-		foreach (var i in temp)
-		{
-			Debug.Log(temp[ii]);
-			ii++;
-		}
-		*/
-	}
-}
-
-/*
-public void ExportMapToFile()
-{
-	File.WriteAllText(mapFilePath, "");
-
-	string mapText = "";
-	foreach (Data.Chunk c in data.map.Values)
-	{
-		foreach (Data.Tile t in data.map[c.index].tiles.Values)
-		{
-			//mapText += "{";
-			mapText += t.chunkIndex + ", " + t.index + ", ";
-			//mapText += t.coordinates.x + ", " + t.coordinates.y + ", ";
-			mapText += t.tileType + ", ";
-
-			mapText += t.parentCountry.countryID + ", ";
-			mapText += t.parentCountry.countryTag + ", ";
-			mapText += t.city.cityName; //+ ",";
-
-			if (t.index == data.map[c.index].tiles.Values.Count - 1 && c.index == data.map.Count - 1)
+			for (int x = 0, i = 0; x < mapSizeX * 8; x++, i++)
 			{
-				//mapText += "}";
-			}
-			else
-			{
-				//mapText += "},\n";
-				mapText += "\n";
+				tileTypes[x, y] = int.Parse(lineSplit[i]);
 			}
 		}
+
+		mapEditorMap.ReadMap(tileTypes, mapSizeX, mapSizeY);
+
+
 	}
-
-
-	// Write to disk
-	StreamWriter writer = new StreamWriter(mapFilePath, false);
-	writer.Write(mapText);
-	writer.Close();
 }
-*/

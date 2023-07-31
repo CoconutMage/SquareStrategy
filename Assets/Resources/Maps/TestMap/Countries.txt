@@ -1,12 +1,14 @@
 {
 	0, USA, The United States of America, Dwight D. Eisenhower
-	{		0, 		0, 		Data+City
+	{
+		0, 		0, 		Data+City
 		TILE DATA HERE
 	}
 },
 {
 	1, USSR, The Union of Soviet Socialist Republics, Josef Stalin
 	{
+
 		TILE DATA HERE
 	}
 }

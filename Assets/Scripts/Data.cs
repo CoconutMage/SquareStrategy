@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 public class Data : MonoBehaviour
 {
@@ -26,6 +25,7 @@ public class Data : MonoBehaviour
 	public Dictionary<string, Sprite> leaderImages;
 
 	public bool mapEditorScene;
+
 
 	private void Awake()
 	{
